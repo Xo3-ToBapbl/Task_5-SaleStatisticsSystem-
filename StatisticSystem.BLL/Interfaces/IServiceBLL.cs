@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace StatisticSystem.BLL.Interfaces
 {
-    public interface IUserService:IDisposable
+    public interface IServiceBLL:IDisposable
     {
-        Task Create(UserDTO userDTO);
-        Task<ClaimsIdentity> Authenticate(UserDTO userDTO);
-        Task SetInitialData(UserDTO adminDTO, List<string> roles);
+        Task Create(ManagerDTO userDTO);
+        Task<ClaimsIdentity> Authenticate(ManagerDTO userDTO);
+        Task SetInitialData(ManagerDTO adminDTO, List<string> roles);
     }
 }

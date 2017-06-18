@@ -21,7 +21,7 @@ namespace StatisticSystem.BLL.Services
 
         public override void Load()
         {
-            //Bind<IUnitOfWork>().To<UnitOfWork>().WithConstructorArgument("connectionString", _connectionString);
+            Bind<IUnitOfWork>().To<UnitOfWork>().WithConstructorArgument("connectionString", _connectionString);
         }
     }
 }

@@ -1,4 +1,7 @@
-﻿using StatisticSystem.DAL.Entities;
+﻿using AutoMapper;
+using StatisticSystem.BLL.DTO;
+using StatisticSystem.BLL.Services;
+using StatisticSystem.DAL.Entities;
 using StatisticSystem.DAL.Repositories;
 using System;
 using System.Collections.Generic;
@@ -22,13 +25,9 @@ namespace ConsoleApplication
 
         static async Task SaveObject(string connectionString)
         {
-            using (UnitOfWork dataBase = new UnitOfWork(connectionString))
+            using (ServiceBLL dataBase = new ServiceBLL(connectionString))
             {
-                var manager = dataBase.ManagerProfiles.Find(x=>x.SecondName=="Kulagin");
-                foreach (var sale in manager.Sales)
-                {
-                    Console.WriteLine($"{sale.Product}");
-                }
+                var manager = dataBase.DataBase.ManagerProfiles.Find(x => x.SecondName == "Vano");
             }
         }
     }
