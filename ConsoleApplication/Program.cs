@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using StatisticSystem.BLL.DTO;
 using StatisticSystem.BLL.Services;
+using StatisticSystem.DAL.EF;
 using StatisticSystem.DAL.Entities;
 using StatisticSystem.DAL.Repositories;
 using System;
@@ -25,9 +26,16 @@ namespace ConsoleApplication
 
         static async Task SaveObject(string connectionString)
         {
-            using (ServiceBLL dataBase = new ServiceBLL(connectionString))
+            using (UnitOfWork dataBase = new UnitOfWork(connectionString))
             {
-                var manager = dataBase.DataBase.ManagerProfiles.Find(x => x.SecondName == "Vano");
+                var user = new Manager() { UserName = "Stupakovic" };
+                var result = await dataBase.Managers.CreateAsync(user, "9999");
+                await dataBase.Managers.AddToRoleAsync(user.Id, "user");
+
+                ManagerProfile managerProfile = new ManagerProfile {Id = user.Id, SecondName = user.UserName};
+                dataBase.ManagerProfiles.Create(managerProfile);
+
+                await dataBase.SaveAsync();
             }
         }
     }
