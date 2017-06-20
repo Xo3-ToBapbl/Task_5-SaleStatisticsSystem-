@@ -10,6 +10,7 @@ using Ninject;
 using StatisticSystem.DAL.Interfaces;
 using StatisticSystem.DAL.Entities;
 using Microsoft.AspNet.Identity;
+using AutoMapper;
 
 namespace StatisticSystem.BLL.Services
 {
@@ -18,6 +19,14 @@ namespace StatisticSystem.BLL.Services
         private StandardKernel _kernel;
 
         public IUnitOfWork DataBase { get; set; }
+
+        public int ManagersCount
+        {
+            get
+            {
+                return DataBase.ManagerProfiles.Count;
+            }
+        }
 
 
         public ServiceBLL(string connectionString)
@@ -57,6 +66,22 @@ namespace StatisticSystem.BLL.Services
             throw new NotImplementedException();
         }
 
+        public IEnumerable<ManagerProfileDTO> GetSpanManagers(int skipNum, int sizeNum)
+        {
+            IEnumerable<ManagerProfile> managersDAL = DataBase.ManagerProfiles.GetSpan(skipNum, sizeNum);
+
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<Sale, SaleDTO>();
+                cfg.CreateMap<ManagerProfile, ManagerProfileDTO>();
+            });
+            Mapper.AssertConfigurationIsValid();
+
+            IEnumerable<ManagerProfileDTO> managersDTO = 
+                Mapper.Map<IEnumerable<ManagerProfile>, IEnumerable<ManagerProfileDTO>>(managersDAL);
+
+            return managersDTO;
+        }
 
         public void Dispose()
         {

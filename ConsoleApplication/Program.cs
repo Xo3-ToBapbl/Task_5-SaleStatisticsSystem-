@@ -26,16 +26,9 @@ namespace ConsoleApplication
 
         static async Task SaveObject(string connectionString)
         {
-            using (UnitOfWork dataBase = new UnitOfWork(connectionString))
+            using (ServiceBLL dataBase = new ServiceBLL(connectionString))
             {
-                var user = new Manager() { UserName = "Stupakovic" };
-                var result = await dataBase.Managers.CreateAsync(user, "9999");
-                await dataBase.Managers.AddToRoleAsync(user.Id, "user");
-
-                ManagerProfile managerProfile = new ManagerProfile {Id = user.Id, SecondName = user.UserName};
-                dataBase.ManagerProfiles.Create(managerProfile);
-
-                await dataBase.SaveAsync();
+                var managers = dataBase.GetSpanManagers(3, 5);
             }
         }
     }

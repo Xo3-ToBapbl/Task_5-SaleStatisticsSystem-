@@ -13,6 +13,14 @@ namespace StatisticSystem.DAL.Repositories
     {
         public DataBaseContext DataBase { get; set; }
 
+        public int Count
+        {
+            get
+            {
+                return DataBase.Sales.Count();
+            }
+        }
+
         public SalesRepository(DataBaseContext dataBase)
         {
             DataBase = dataBase;
@@ -32,6 +40,11 @@ namespace StatisticSystem.DAL.Repositories
         public void Dispose()
         {
             DataBase.Dispose();
+        }
+
+        public IEnumerable<Sale> GetSpan(int skipNum, int sizeNum)
+        {
+            return DataBase.Sales.OrderBy(x=>x.Client).Skip(skipNum).Take(sizeNum);
         }
     }
 }

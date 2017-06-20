@@ -10,8 +10,12 @@ namespace StatisticSystem.BLL.Interfaces
 {
     public interface IServiceBLL:IDisposable
     {
+        int ManagersCount { get; }
+
         Task Create(ManagerDTO userDTO);
         Task<ClaimsIdentity> Authenticate(ManagerDTO userDTO);
         Task SetInitialData(ManagerDTO adminDTO, List<string> roles);
+
+        IEnumerable<ManagerProfileDTO> GetSpanManagers(int skipNum, int sizeNum);
     }
 }

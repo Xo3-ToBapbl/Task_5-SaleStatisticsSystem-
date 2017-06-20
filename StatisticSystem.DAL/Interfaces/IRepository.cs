@@ -11,5 +11,7 @@ namespace StatisticSystem.DAL.Interfaces
     {
         void Create(T item);
         T Find(Func<T, bool> predicate);
+        IEnumerable<T> GetSpan(int skipNum, int sizeNum);
+        int Count { get; }
     }
 }

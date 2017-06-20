@@ -14,6 +14,14 @@ namespace StatisticSystem.DAL.Repositories
     {
         public DataBaseContext DataBase { get; set; }
 
+        public int Count
+        {
+            get
+            {
+                return DataBase.ManagerProfiles.Count();
+            }
+        }
+
         public ManagerProfileRepository(DataBaseContext dataBase)
         {
             DataBase = dataBase;
@@ -27,6 +35,11 @@ namespace StatisticSystem.DAL.Repositories
         public ManagerProfile Find(Func<ManagerProfile, bool> predicate)
         {
             return DataBase.ManagerProfiles.FirstOrDefault(predicate);
+        }
+
+        public IEnumerable<ManagerProfile> GetSpan(int skipNum, int sizeNum)
+        {
+            return DataBase.ManagerProfiles.OrderBy(x => x.SecondName).Skip(skipNum).Take(sizeNum).ToList();
         }
 
 

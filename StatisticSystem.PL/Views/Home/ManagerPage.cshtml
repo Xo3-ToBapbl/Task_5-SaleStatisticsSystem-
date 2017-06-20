@@ -1,4 +1,6 @@
-﻿
+﻿@model StatisticSystem.PL.Models.IndexViewModel
+@using StatisticSystem.PL.Helpers
+
 @{
     Layout = null;
 }
@@ -8,11 +10,28 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>ManagerPage</title>
+    <title>Manager Page</title>
 </head>
 <body>
     <div>
         <h1>Hello @ViewBag.Name manager!</h1> 
+    </div>
+    <table>
+        <tr>
+            <td> Manager second name</td>
+            <td>See details</td>
+        </tr>
+        @foreach (var item in Model.ManagerProfiles)
+        {
+            <tr>
+                <td>@item.SecondName</td>
+                <td><a href="/Home/Details?secondName=@item.SecondName&sales=@item.Sales">Details</a></td>
+            </tr>
+        }
+    </table>
+    <br/>
+    <div>
+        @Html.PageLinks(Model.PageInfo, x=> Url.Action("ManagerPage", new { page = x}))
     </div>
 </body>
 </html>
