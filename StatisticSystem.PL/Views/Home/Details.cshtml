@@ -32,7 +32,7 @@
     </table>
     <br />
     <div>
-        @Html.PageLinks(Model.PageInfo, x => Url.Action("ManagerPage", new { page = x }))
+        @Html.PageLinks(Model.PageInfo, x => Url.Action("Details", new { page = x }))
     </div>
 </body>
 </html>

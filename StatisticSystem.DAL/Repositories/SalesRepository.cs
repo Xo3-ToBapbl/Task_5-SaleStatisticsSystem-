@@ -36,6 +36,11 @@ namespace StatisticSystem.DAL.Repositories
             return DataBase.Sales.FirstOrDefault(predicate);
         }
 
+        public IEnumerable<Sale> GetSalessById(string Id)
+        {
+            return DataBase.Sales.Where(x => x.ManagerProfileId == Id).ToList();
+        }
+
 
         public void Dispose()
         {
@@ -44,7 +49,7 @@ namespace StatisticSystem.DAL.Repositories
 
         public IEnumerable<Sale> GetSpan(int skipNum, int sizeNum)
         {
-            return DataBase.Sales.OrderBy(x=>x.Client).Skip(skipNum).Take(sizeNum);
+            return DataBase.Sales.OrderBy(x=>x.Client).Skip(skipNum).Take(sizeNum).ToList();
         }
     }
 }

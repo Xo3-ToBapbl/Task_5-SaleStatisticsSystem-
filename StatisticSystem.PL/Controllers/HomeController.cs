@@ -84,19 +84,16 @@ namespace StatisticSystem.PL.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "user")]      
-        public ActionResult Details(string secondName, ICollection<SaleDTO>sales, int page = 1)
+        [Authorize(Roles = "user")]
+        public ActionResult Details(string Id, int page = 1)
         {
-            if (sales.Count != 0)
-            {
-                int pageSize = 5;
-                IEnumerable<SaleDTO> salesPerPage = sales.Skip((page - 1) * pageSize).Take(pageSize);
-                PageInfo pageInfo = new PageInfo { PageNumber = page, PageSize = pageSize, TotalItems = sales.Count };
-                IndexViewModel indexViewModel = new IndexViewModel { PageInfo = pageInfo, Sales = salesPerPage };
-                return View(indexViewModel);
-            }
-            else
-                return null;   
+            int pageSize = 3;
+            IEnumerable<SaleDTO> sales = ServiceBLL.GetSalesById(Id);
+
+            IEnumerable<SaleDTO> salesPerPage = sales.Skip((page - 1) * pageSize).Take(pageSize);
+            PageInfo pageInfo = new PageInfo { PageNumber = page, PageSize = pageSize, TotalItems = sales.Count() };
+            IndexViewModel indexViewModel = new IndexViewModel { PageInfo = pageInfo, Sales = salesPerPage };
+            return View(indexViewModel);
         }
     }
 }

@@ -72,8 +72,7 @@ namespace StatisticSystem.BLL.Services
 
             Mapper.Initialize(cfg =>
             {
-                cfg.CreateMap<Sale, SaleDTO>();
-                cfg.CreateMap<ManagerProfile, ManagerProfileDTO>();
+                cfg.CreateMap<ManagerProfile, ManagerProfileDTO>().ForMember(x => x.Sales, opt => opt.Ignore());
             });
             Mapper.AssertConfigurationIsValid();
 
@@ -81,6 +80,25 @@ namespace StatisticSystem.BLL.Services
                 Mapper.Map<IEnumerable<ManagerProfile>, IEnumerable<ManagerProfileDTO>>(managersDAL);
 
             return managersDTO;
+        }
+
+        public IEnumerable<SaleDTO> GetSalesById(string Id)
+        {
+            IEnumerable<Sale> salesDAL = DataBase.GetSalesById(Id);
+            if (salesDAL.Count()!=0)
+            {
+                Mapper.Initialize(cfg =>
+                {
+                    cfg.CreateMap<Sale, SaleDTO>();
+                });
+                Mapper.AssertConfigurationIsValid();
+
+                return Mapper.Map<IEnumerable<Sale>, IEnumerable<SaleDTO>>(salesDAL);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public void Dispose()

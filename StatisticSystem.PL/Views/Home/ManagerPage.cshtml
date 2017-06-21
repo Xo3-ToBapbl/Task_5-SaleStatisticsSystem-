@@ -1,5 +1,6 @@
-﻿@model StatisticSystem.PL.Models.IndexViewModel
-@using StatisticSystem.PL.Helpers
+﻿@using StatisticSystem.PL.Helpers
+@model StatisticSystem.PL.Models.IndexViewModel
+
 
 @{
     Layout = null;
@@ -19,14 +20,14 @@
     <table>
         <tr>
             <td> Manager second name</td>
-            <td>See details</td>
+            <td>See details</td>           
         </tr>
         @foreach (var item in Model.ManagerProfiles)
         {
             <tr>
                 <td>@item.SecondName</td>
-                <td><a href="/Home/Details?secondName=@item.SecondName&sales=@item.Sales">Details</a></td>
-            </tr>
+                <td><a href="/Home/Details?Id=@item.Id">Details</a></td>
+</tr>
         }
     </table>
     <br/>

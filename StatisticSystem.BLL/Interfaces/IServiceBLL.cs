@@ -17,5 +17,6 @@ namespace StatisticSystem.BLL.Interfaces
         Task SetInitialData(ManagerDTO adminDTO, List<string> roles);
 
         IEnumerable<ManagerProfileDTO> GetSpanManagers(int skipNum, int sizeNum);
+        IEnumerable<SaleDTO> GetSalesById(string Id);
     }
 }

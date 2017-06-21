@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using StatisticSystem.DAL.EF;
 using Microsoft.AspNet.Identity.EntityFramework;
 using StatisticSystem.DAL.Entities;
+using StatisticSystem.DAL.UtilClasses;
+using System.Collections.Generic;
 
 namespace StatisticSystem.DAL.Repositories
 {
@@ -76,6 +78,11 @@ namespace StatisticSystem.DAL.Repositories
         public void SaveChanges()
         {
             _dataBase.SaveChanges();
+        }
+
+        public IEnumerable<Sale> GetSalesById(string Id)
+        {
+            return (Sales as SalesRepository).GetSalessById(Id);
         }
 
 
