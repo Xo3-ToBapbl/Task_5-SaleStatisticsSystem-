@@ -20,7 +20,8 @@ namespace ConsoleApplication
 
             using (ServiceBLL dataBase = new ServiceBLL(connectionString))
             {
-                var managers = dataBase.GetSpanManagers(3, 5);
+                var managers = dataBase.GetManagers(x => x.SecondName);
+
                 foreach (var manager in managers)
                 {
                     var item = manager;
@@ -35,9 +36,9 @@ namespace ConsoleApplication
 
         static async Task SaveObject(string connectionString)
         {
-            using (UnitOfWork dataBase = new UnitOfWork(connectionString))
+            using (ServiceBLL dataBase = new ServiceBLL(connectionString))
             {
-                var managers = dataBase.ManagerProfiles.GetSpan(3, 5);
+                var managers = dataBase.GetManagers(x => x.SecondName);
 
                 foreach (var manager in managers)
                 {

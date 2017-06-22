@@ -1,4 +1,6 @@
-﻿@{
+﻿@model StatisticSystem.PL.Models.LoginModel
+
+@{
     Layout = null;
 }
 
@@ -13,21 +15,33 @@
     <div>
         <h2>@ViewBag.Message</h2>
         <h3>Log in form</h3>
-        <form method="post" action="">
-            <table>
-                <tr>
-                    <td>UserName:</td>
-                    <td><input type="text" name="UserName" /></td>
-                </tr>
-                <tr>
-                    <td>Password:</td>
-                    <td><input type="text" name="Password" /></td>
-                </tr>
-                <tr>
-                    <td><input type="submit" name="Ok" /></td>
-                </tr>
-            </table>
-        </form>
     </div>
+
+    @using (Html.BeginForm("LogIn", "Home"))
+    {
+        @Html.AntiForgeryToken()
+        <div>
+            @Html.ValidationSummary(true)
+            <div>
+                @Html.LabelFor(model=>model.UserName)
+                <div>
+                    @Html.EditorFor(model=>model.UserName)
+                    @Html.ValidationMessageFor(model => model.UserName)
+                </div>
+            </div>
+
+            <div>
+                @Html.LabelFor(model => model.Password)
+                <div>
+                    @Html.EditorFor(model => model.Password)
+                    @Html.ValidationMessageFor(model => model.Password)
+                </div>
+            </div>
+
+            <div>
+                <input type="submit" value="Ok" />
+            </div>
+        </div>
+    }
 </body>
 </html>

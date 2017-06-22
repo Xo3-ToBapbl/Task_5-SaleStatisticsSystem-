@@ -1,9 +1,11 @@
 ﻿using StatisticSystem.DAL.EF;
 using StatisticSystem.DAL.Entities;
 using StatisticSystem.DAL.Interfaces;
+using StatisticSystem.DAL.UtilClasses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,10 +23,12 @@ namespace StatisticSystem.DAL.Repositories
             }
         }
 
+
         public SalesRepository(DataBaseContext dataBase)
         {
             DataBase = dataBase;
         }
+
 
         public void Create(Sale item)
         {
@@ -41,15 +45,20 @@ namespace StatisticSystem.DAL.Repositories
             return DataBase.Sales.Where(x => x.ManagerProfileId == Id).ToList();
         }
 
+        public IEnumerable<Sale> GetSpan(int skipNum, int sizeNum)
+        {
+            return DataBase.Sales.OrderBy(x=>x.Client).Skip(skipNum).Take(sizeNum).ToList();
+        }
+
+        public IEnumerable<Sale> GetAll(Expression<Func<Sale, string>> expression)
+        {
+            return DataBase.Sales.OrderBy(expression).ToList();
+        }
+
 
         public void Dispose()
         {
             DataBase.Dispose();
-        }
-
-        public IEnumerable<Sale> GetSpan(int skipNum, int sizeNum)
-        {
-            return DataBase.Sales.OrderBy(x=>x.Client).Skip(skipNum).Take(sizeNum).ToList();
         }
     }
 }

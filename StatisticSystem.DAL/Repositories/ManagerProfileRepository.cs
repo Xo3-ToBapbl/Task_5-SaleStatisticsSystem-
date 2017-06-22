@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using StatisticSystem.DAL.Entities;
 using StatisticSystem.DAL.EF;
+using System.Linq.Expressions;
 
 namespace StatisticSystem.DAL.Repositories
 {
@@ -22,10 +23,12 @@ namespace StatisticSystem.DAL.Repositories
             }
         }
 
+
         public ManagerProfileRepository(DataBaseContext dataBase)
         {
             DataBase = dataBase;
         }
+
 
         public void Create(ManagerProfile item)
         {
@@ -35,6 +38,11 @@ namespace StatisticSystem.DAL.Repositories
         public ManagerProfile Find(Func<ManagerProfile, bool> predicate)
         {
             return DataBase.ManagerProfiles.FirstOrDefault(predicate);
+        }
+
+        public IEnumerable<ManagerProfile> GetAll(Expression<Func<ManagerProfile, string>> expression)
+        {
+            return DataBase.ManagerProfiles.OrderBy(expression).ToList();
         }
 
         public IEnumerable<ManagerProfile> GetSpan(int skipNum, int sizeNum)

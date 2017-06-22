@@ -6,6 +6,7 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using StatisticSystem.DAL.Entities;
 using StatisticSystem.DAL.UtilClasses;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace StatisticSystem.DAL.Repositories
 {
@@ -85,8 +86,13 @@ namespace StatisticSystem.DAL.Repositories
             return (Sales as SalesRepository).GetSalessById(Id);
         }
 
+        public IEnumerable<ManagerProfile> GetManagerProfiles(Expression<Func<ManagerProfile, string>> expression)
+        {
+            return ManagerProfiles.GetAll(expression);
+        }
 
-        #region
+
+        #region Dispose
         private bool disposed = false;
 
         public void Dispose()

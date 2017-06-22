@@ -11,6 +11,7 @@ using StatisticSystem.DAL.Interfaces;
 using StatisticSystem.DAL.Entities;
 using Microsoft.AspNet.Identity;
 using AutoMapper;
+using System.Linq.Expressions;
 
 namespace StatisticSystem.BLL.Services
 {
@@ -19,14 +20,6 @@ namespace StatisticSystem.BLL.Services
         private StandardKernel _kernel;
 
         public IUnitOfWork DataBase { get; set; }
-
-        public int ManagersCount
-        {
-            get
-            {
-                return DataBase.ManagerProfiles.Count;
-            }
-        }
 
 
         public ServiceBLL(string connectionString)
@@ -100,6 +93,31 @@ namespace StatisticSystem.BLL.Services
                 return null;
             }
         }
+
+        public IEnumerable<ManagerProfileDTO> GetManagers(Expression<Func<ManagerProfileDTO, string>> expression)
+        {
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<ManagerProfile, ManagerProfileDTO>().
+                    ForMember(dest=>dest.Sales, option=>option.Ignore());
+                cfg.CreateMap<ManagerProfileDTO, ManagerProfile>().
+                    ForMember(dest => dest.Sales, option => option.Ignore()).
+                    ForMember(dest=>dest.Manager, option=>option.Ignore());
+            });
+            Mapper.AssertConfigurationIsValid();
+
+            Expression<Func<ManagerProfile, string>> expressionDAL = Mapper.
+                Map<Expression<Func<ManagerProfileDTO, string>>, Expression<Func<ManagerProfile, string>>>(expression);
+
+            IEnumerable<ManagerProfile> managersDAL = DataBase.GetManagerProfiles(expressionDAL);
+            if (managersDAL!=null)
+            {
+                return Mapper.Map<IEnumerable<ManagerProfile>, IEnumerable<ManagerProfileDTO>>(managersDAL);
+            }
+
+            return null;
+        }
+
 
         public void Dispose()
         {

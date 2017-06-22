@@ -1,7 +1,6 @@
 ﻿using StatisticSystem.BLL.DTO;
 using StatisticSystem.BLL.Interfaces;
 using StatisticSystem.PL.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -31,6 +30,7 @@ namespace StatisticSystem.PL.Controllers
             }
         }
 
+        [HttpGet]
         public ActionResult Index()
         {
             ViewBag.Message = "Please, Log in:";
@@ -38,7 +38,8 @@ namespace StatisticSystem.PL.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Index(LoginModel model)
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> LogIn(LoginModel model)
         {
             if (ModelState.IsValid)
             {
@@ -52,48 +53,55 @@ namespace StatisticSystem.PL.Controllers
                 {
                     AuthenticationManager.SignOut();
                     AuthenticationManager.SignIn(new AuthenticationProperties { IsPersistent = true }, claim);
-                    
                     if (User.IsInRole("admin"))
-                        return RedirectToAction("AdminPage");
+                        return RedirectToAction("AdminPage", "Admin");
                     else
                     {
                         return RedirectToAction("ManagerPage");
                     }
                 }
             }
-            return View(model);
-        }
-
-        [Authorize(Roles = "admin")]
-        public ActionResult AdminPage()
-        {
-            ViewBag.Name = User.Identity.Name;
-            return View();
-        }
-
-        [Authorize(Roles = "user")]
-        public ActionResult ManagerPage(int page=1)
-        {
-            ViewBag.Name = User.Identity.Name;
-
-            int pageSize = 5;
-            IEnumerable<ManagerProfileDTO> managerProfilesPerPage = ServiceBLL.GetSpanManagers((page - 1) * pageSize, pageSize);
-            PageInfo pageInfo = new PageInfo { PageNumber = page, PageSize = pageSize, TotalItems = ServiceBLL.ManagersCount };
-            IndexViewModel indexViewModel = new IndexViewModel { PageInfo = pageInfo, ManagerProfiles = managerProfilesPerPage };
-            return View(indexViewModel);
+            return View("Index", model);
         }
 
         [HttpGet]
-        [Authorize(Roles = "user")]
-        public ActionResult Details(string Id, int page = 1)
+        public ActionResult LogOut()
         {
-            int pageSize = 3;
-            IEnumerable<SaleDTO> sales = ServiceBLL.GetSalesById(Id);
-
-            IEnumerable<SaleDTO> salesPerPage = sales.Skip((page - 1) * pageSize).Take(pageSize);
-            PageInfo pageInfo = new PageInfo { PageNumber = page, PageSize = pageSize, TotalItems = sales.Count() };
-            IndexViewModel indexViewModel = new IndexViewModel { PageInfo = pageInfo, Sales = salesPerPage };
-            return View(indexViewModel);
+            AuthenticationManager.SignOut();
+            return RedirectToAction("Index", "Home");
         }
+
+
+
+        //[Authorize(Roles = "admin")]
+        //public ActionResult AdminPage()
+        //{
+        //    ViewBag.Name = User.Identity.Name;
+        //    return View();
+        //}
+
+        //[Authorize(Roles = "user")]
+        //public ActionResult ManagerPage(int page=1)
+        //{
+        //    ViewBag.Name = User.Identity.Name;
+
+        //    int pageSize = 5;
+        //    IEnumerable<ManagerProfileDTO> managerProfilesPerPage = ServiceBLL.GetSpanManagers((page - 1) * pageSize, pageSize);
+        //    PageInfo pageInfo = new PageInfo { PageNumber = page, PageSize = pageSize, TotalItems = ServiceBLL.ManagersCount };
+        //    IndexViewModel indexViewModel = new IndexViewModel { PageInfo = pageInfo, ManagerProfiles = managerProfilesPerPage };
+        //    return View(indexViewModel);
+        //}
+
+        //[HttpGet]
+        //[Authorize(Roles = "user")]
+        //public ActionResult Details(string Id, int page = 1)
+        //{
+        //    int pageSize = 3;
+        //    IEnumerable <SaleDTO> sales = ServiceBLL.GetSalesById(Id);
+        //    IEnumerable<SaleDTO> salesPerPage = sales.Skip((page - 1) * pageSize).Take(pageSize);
+        //    PageInfo pageInfo = new PageInfo { PageNumber = page, PageSize = pageSize, TotalItems = Sales.Count() };
+        //    IndexViewModel indexViewModel = new IndexViewModel { PageInfo = pageInfo, Sales = salesPerPage, Id = Id };
+        //    return View(indexViewModel);
+        //}
     }
 }

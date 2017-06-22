@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,6 +13,6 @@ namespace StatisticSystem.DAL.Interfaces
         void Create(T item);
         T Find(Func<T, bool> predicate);
         IEnumerable<T> GetSpan(int skipNum, int sizeNum);
-        int Count { get; }
+        IEnumerable<T> GetAll(Expression<Func<T, string>> expression);
     }
 }

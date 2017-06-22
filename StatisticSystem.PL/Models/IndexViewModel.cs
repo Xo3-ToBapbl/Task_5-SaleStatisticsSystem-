@@ -12,5 +12,7 @@ namespace StatisticSystem.PL.Models
         public IEnumerable<ManagerProfileDTO> ManagerProfiles { get; set; }
         public IEnumerable<SaleDTO> Sales { get; set; }
         public PageInfo PageInfo { get; set; }
+
+        public string Id { get; set; }
     }
 }

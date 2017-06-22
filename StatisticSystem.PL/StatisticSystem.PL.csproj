@@ -166,6 +166,7 @@
     <Compile Include="App_Start\NinjectModulePL.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -210,7 +211,7 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\ManagerPage.cshtml" />
-    <Content Include="Views\Home\AdminPage.cshtml" />
+    <Content Include="Views\Admin\AdminPage.cshtml" />
     <Content Include="Views\Home\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
