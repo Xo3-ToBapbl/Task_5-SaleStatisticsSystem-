@@ -18,34 +18,14 @@ namespace ConsoleApplication
         {
             string connectionString = ConfigurationManager.ConnectionStrings["ManagersDataBaseConnection"].ConnectionString;
 
-            using (ServiceBLL dataBase = new ServiceBLL(connectionString))
-            {
-                var managers = dataBase.GetManagers(x => x.SecondName);
+            ServiceBLL dataBase = new ServiceBLL(connectionString);           
+            var items = dataBase.GetManagersSpan(3, 5);
 
-                foreach (var manager in managers)
-                {
-                    var item = manager;
-                }
-            }
-
-            //SaveObject(connectionString).Wait();
 
             Console.WriteLine("Press any key to close.");
             Console.ReadKey();
         }
 
-        static async Task SaveObject(string connectionString)
-        {
-            using (ServiceBLL dataBase = new ServiceBLL(connectionString))
-            {
-                var managers = dataBase.GetManagers(x => x.SecondName);
-
-                foreach (var manager in managers)
-                {
-                    var item = manager;
-                }
-            }
-        }
     }
 }
 

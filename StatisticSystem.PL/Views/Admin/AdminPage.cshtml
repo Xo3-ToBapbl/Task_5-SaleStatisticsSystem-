@@ -1,4 +1,6 @@
-﻿
+﻿@using StatisticSystem.PL.Helpers
+@model StatisticSystem.PL.Models.IndexViewModel
+
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -13,6 +15,27 @@
 <body>
     <div> 
         <h1>Hello @ViewBag.Name admin!</h1> 
+    </div>
+    <table>
+        <tr>
+            <td> Manager second name</td>
+            <td>See details</td>
+            <td>Edit profile</td>
+            <td>Delete</td>
+        </tr>
+        @foreach (var item in Model.ManagerProfiles)
+        {
+            <tr>
+                <td>@item.SecondName</td>
+                <td><a href="/Home/Details?Id=@item.Id">Details</a></td>
+                <td><a href="/Home/Edit?Id=@item.Id">Edit</a></td>
+                <td><a href="/Home/Delte?Id=@item.Id">Delete</a></td>
+            </tr>
+        }
+    </table>
+    <br />
+    <div>
+        @Html.PageLinks(Model.PageInfo, x => Url.Action("AdminPage", new { page = x }))
     </div>
 </body>
 </html>

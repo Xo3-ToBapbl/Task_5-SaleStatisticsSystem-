@@ -52,10 +52,10 @@ namespace StatisticSystem.PL.Controllers
                 else
                 {
                     AuthenticationManager.SignOut();
-                    AuthenticationManager.SignIn(new AuthenticationProperties { IsPersistent = true }, claim);
+                    AuthenticationManager.SignIn(new AuthenticationProperties { IsPersistent = false }, claim);
                     if (User.IsInRole("admin"))
                         return RedirectToAction("AdminPage", "Admin");
-                    else
+                    else if (User.IsInRole("user"))
                     {
                         return RedirectToAction("ManagerPage");
                     }

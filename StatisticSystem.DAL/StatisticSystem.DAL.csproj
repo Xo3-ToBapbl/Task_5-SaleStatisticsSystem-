@@ -70,7 +70,6 @@
     <Compile Include="Repositories\ManagerProfileRepository.cs" />
     <Compile Include="Repositories\SalesRepository.cs" />
     <Compile Include="Repositories\UnitOfWork.cs" />
-    <Compile Include="UtilClasses\SalesInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

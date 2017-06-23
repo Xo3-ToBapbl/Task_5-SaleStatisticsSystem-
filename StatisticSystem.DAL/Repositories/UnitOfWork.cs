@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using StatisticSystem.DAL.EF;
 using Microsoft.AspNet.Identity.EntityFramework;
 using StatisticSystem.DAL.Entities;
-using StatisticSystem.DAL.UtilClasses;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
@@ -13,11 +12,11 @@ namespace StatisticSystem.DAL.Repositories
     public class UnitOfWork : IUnitOfWork
     {
         private DataBaseContext _dataBase;
-
         private ManagerRepository _managers;
         private RoleRepository _roles;
         private ManagerProfileRepository _managersProfiles;
         private SalesRepository _sales;
+
 
         public DataBaseContext DataBaseContext
         {
@@ -43,7 +42,7 @@ namespace StatisticSystem.DAL.Repositories
             }
         }
 
-        public IRepository<ManagerProfile> ManagerProfiles
+        public ManagerProfileRepository ManagerProfiles
         {
             get
             {
@@ -51,7 +50,7 @@ namespace StatisticSystem.DAL.Repositories
             }
         }
 
-        public IRepository<Sale> Sales
+        public SalesRepository Sales
         {
             get
             {
@@ -71,16 +70,6 @@ namespace StatisticSystem.DAL.Repositories
         }
 
 
-        public async Task SaveAsync()
-        {
-            await _dataBase.SaveChangesAsync();
-        }
-
-        public void SaveChanges()
-        {
-            _dataBase.SaveChanges();
-        }
-
         public IEnumerable<Sale> GetSalesById(string Id)
         {
             return (Sales as SalesRepository).GetSalessById(Id);
@@ -89,6 +78,28 @@ namespace StatisticSystem.DAL.Repositories
         public IEnumerable<ManagerProfile> GetManagerProfiles(Expression<Func<ManagerProfile, string>> expression)
         {
             return ManagerProfiles.GetAll(expression);
+        }
+
+        public KeyValuePair<int, IEnumerable<ManagerProfile>> GetManagerProfilesSpan(int skipNum, int sizeNum)
+        {
+            return ManagerProfiles.GetManagerProfilesSpan(skipNum, sizeNum);
+        }
+
+        public KeyValuePair<int, IEnumerable<Sale>> GetSalesSpan
+            (string id, int skipNum, int sizeNum, string filter)
+        {
+            return Sales.GetSalesSpan(id, skipNum, sizeNum, filter);
+        }
+
+
+        public async Task SaveAsync()
+        {
+            await _dataBase.SaveChangesAsync();
+        }
+
+        public void SaveChanges()
+        {
+            _dataBase.SaveChanges();
         }
 
 

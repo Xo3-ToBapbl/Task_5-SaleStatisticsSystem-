@@ -15,8 +15,8 @@ namespace StatisticSystem.BLL.Interfaces
         Task<ClaimsIdentity> Authenticate(ManagerDTO userDTO);
         Task SetInitialData(ManagerDTO adminDTO, List<string> roles);
 
-        IEnumerable<ManagerProfileDTO> GetSpanManagers(int skipNum, int sizeNum);
-        IEnumerable<SaleDTO> GetSalesById(string Id);
+        KeyValuePair<int, IEnumerable<ManagerProfileDTO>> GetManagersSpan(int skipNum, int sizeNum);
+        KeyValuePair<int, IEnumerable<SaleDTO>> GetSalesSpan(string id, int skipNum, int sizeNum, string filter);
         IEnumerable<ManagerProfileDTO> GetManagers(Expression<Func<ManagerProfileDTO, string>> expression);
     }
 }

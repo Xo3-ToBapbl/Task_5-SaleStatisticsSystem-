@@ -1,8 +1,6 @@
 ﻿using StatisticSystem.BLL.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using StatisticSystem.BLL.DTO;
 using System.Security.Claims;
@@ -59,9 +57,11 @@ namespace StatisticSystem.BLL.Services
             throw new NotImplementedException();
         }
 
-        public IEnumerable<ManagerProfileDTO> GetSpanManagers(int skipNum, int sizeNum)
+
+        public KeyValuePair<int, IEnumerable<ManagerProfileDTO>> GetManagersSpan(int skipNum, int sizeNum)
         {
-            IEnumerable<ManagerProfile> managersDAL = DataBase.ManagerProfiles.GetSpan(skipNum, sizeNum);
+            KeyValuePair<int, IEnumerable<ManagerProfile>> pairDAL = 
+                DataBase.ManagerProfiles.GetManagerProfilesSpan(skipNum, sizeNum);
 
             Mapper.Initialize(cfg =>
             {
@@ -69,29 +69,29 @@ namespace StatisticSystem.BLL.Services
             });
             Mapper.AssertConfigurationIsValid();
 
-            IEnumerable<ManagerProfileDTO> managersDTO = 
-                Mapper.Map<IEnumerable<ManagerProfile>, IEnumerable<ManagerProfileDTO>>(managersDAL);
+            IEnumerable<ManagerProfileDTO> managerPofilesDTO = 
+                Mapper.Map<IEnumerable<ManagerProfile>, IEnumerable<ManagerProfileDTO>>(pairDAL.Value);
 
-            return managersDTO;
+            KeyValuePair<int, IEnumerable<ManagerProfileDTO>> pairDTO =
+                new KeyValuePair<int, IEnumerable<ManagerProfileDTO>>(pairDAL.Key, managerPofilesDTO);
+            return pairDTO;
         }
 
-        public IEnumerable<SaleDTO> GetSalesById(string Id)
+        public KeyValuePair<int, IEnumerable<SaleDTO>> GetSalesSpan(string id, int skipNum, int sizeNum, string filter)
         {
-            IEnumerable<Sale> salesDAL = DataBase.GetSalesById(Id);
-            if (salesDAL.Count()!=0)
-            {
-                Mapper.Initialize(cfg =>
-                {
-                    cfg.CreateMap<Sale, SaleDTO>();
-                });
-                Mapper.AssertConfigurationIsValid();
+            KeyValuePair<int, IEnumerable<Sale>> pairDAL = DataBase.GetSalesSpan(id, sizeNum, sizeNum, filter);
 
-                return Mapper.Map<IEnumerable<Sale>, IEnumerable<SaleDTO>>(salesDAL);
-            }
-            else
+            Mapper.Initialize(cfg =>
             {
-                return null;
-            }
+                cfg.CreateMap<Sale, SaleDTO>();
+            });
+            Mapper.AssertConfigurationIsValid();
+
+            IEnumerable<SaleDTO> saleDTO = Mapper.Map<IEnumerable<Sale>, IEnumerable<SaleDTO>>(pairDAL.Value);
+
+            KeyValuePair<int, IEnumerable<SaleDTO>> pairDTO = new KeyValuePair<int, IEnumerable<SaleDTO>>(pairDAL.Key, saleDTO);
+            return pairDTO;
+
         }
 
         public IEnumerable<ManagerProfileDTO> GetManagers(Expression<Func<ManagerProfileDTO, string>> expression)

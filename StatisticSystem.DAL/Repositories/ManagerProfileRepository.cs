@@ -11,8 +11,14 @@ using System.Linq.Expressions;
 
 namespace StatisticSystem.DAL.Repositories
 {
-    public class ManagerProfileRepository : IRepository<ManagerProfile>, IDisposable
+    public class ManagerProfileRepository : IDisposable
     {
+        public ManagerProfileRepository(DataBaseContext dataBase)
+        {
+            DataBase = dataBase;
+        }
+
+
         public DataBaseContext DataBase { get; set; }
 
         public int Count
@@ -21,12 +27,6 @@ namespace StatisticSystem.DAL.Repositories
             {
                 return DataBase.ManagerProfiles.Count();
             }
-        }
-
-
-        public ManagerProfileRepository(DataBaseContext dataBase)
-        {
-            DataBase = dataBase;
         }
 
 
@@ -45,9 +45,11 @@ namespace StatisticSystem.DAL.Repositories
             return DataBase.ManagerProfiles.OrderBy(expression).ToList();
         }
 
-        public IEnumerable<ManagerProfile> GetSpan(int skipNum, int sizeNum)
+        public KeyValuePair<int, IEnumerable<ManagerProfile>> GetManagerProfilesSpan(int skipNum, int sizeNum)
         {
-            return DataBase.ManagerProfiles.OrderBy(x => x.SecondName).Skip(skipNum).Take(sizeNum).ToList();
+            return new KeyValuePair<int, IEnumerable<ManagerProfile>>
+                (DataBase.ManagerProfiles.Count(),
+                DataBase.ManagerProfiles.OrderBy(x => x.SecondName).Skip(skipNum).Take(sizeNum).ToList());
         }
 
 

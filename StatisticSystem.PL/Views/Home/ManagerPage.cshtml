@@ -19,15 +19,15 @@
     </div>
     <table>
         <tr>
-            <td> Manager second name</td>
+            <td>Manager second name</td>
             <td>See details</td>           
         </tr>
         @foreach (var item in Model.ManagerProfiles)
         {
             <tr>
                 <td>@item.SecondName</td>
-                <td><a href="/Home/Details?Id=@item.Id">Details</a></td>
-</tr>
+                <td><a href="/Admin/Details?Id=@item.Id">Details</a></td>
+            </tr>
         }
     </table>
     <br/>

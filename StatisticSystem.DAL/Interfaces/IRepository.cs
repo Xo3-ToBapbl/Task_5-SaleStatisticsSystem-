@@ -12,7 +12,7 @@ namespace StatisticSystem.DAL.Interfaces
     {
         void Create(T item);
         T Find(Func<T, bool> predicate);
-        IEnumerable<T> GetSpan(int skipNum, int sizeNum);
+        IDictionary<int, IEnumerable<T>> GetSpan(int skipNum, int sizeNum);
         IEnumerable<T> GetAll(Expression<Func<T, string>> expression);
     }
 }
