@@ -11,6 +11,6 @@ namespace StatisticSystem.BLL.DTO
         public string Product { get; set; }
         public int Cost { get; set; }
 
-        public string ManagerProfileId { get; set; }
+        public string ManagerId { get; set; }
     }
 }

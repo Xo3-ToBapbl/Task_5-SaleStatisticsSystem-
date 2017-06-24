@@ -66,7 +66,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DTO\ManagerDTO.cs" />
-    <Compile Include="DTO\ManagerProfileDTO.cs" />
     <Compile Include="DTO\SaleDTO.cs" />
     <Compile Include="Interfaces\IServiceBLL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

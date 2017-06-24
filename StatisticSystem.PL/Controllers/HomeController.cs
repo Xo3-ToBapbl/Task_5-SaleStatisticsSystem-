@@ -70,39 +70,6 @@ namespace StatisticSystem.PL.Controllers
         {
             AuthenticationManager.SignOut();
             return RedirectToAction("Index", "Home");
-        }
-
-
-
-        //[Authorize(Roles = "admin")]
-        //public ActionResult AdminPage()
-        //{
-        //    ViewBag.Name = User.Identity.Name;
-        //    return View();
-        //}
-
-        //[Authorize(Roles = "user")]
-        //public ActionResult ManagerPage(int page=1)
-        //{
-        //    ViewBag.Name = User.Identity.Name;
-
-        //    int pageSize = 5;
-        //    IEnumerable<ManagerProfileDTO> managerProfilesPerPage = ServiceBLL.GetSpanManagers((page - 1) * pageSize, pageSize);
-        //    PageInfo pageInfo = new PageInfo { PageNumber = page, PageSize = pageSize, TotalItems = ServiceBLL.ManagersCount };
-        //    IndexViewModel indexViewModel = new IndexViewModel { PageInfo = pageInfo, ManagerProfiles = managerProfilesPerPage };
-        //    return View(indexViewModel);
-        //}
-
-        //[HttpGet]
-        //[Authorize(Roles = "user")]
-        //public ActionResult Details(string Id, int page = 1)
-        //{
-        //    int pageSize = 3;
-        //    IEnumerable <SaleDTO> sales = ServiceBLL.GetSalesById(Id);
-        //    IEnumerable<SaleDTO> salesPerPage = sales.Skip((page - 1) * pageSize).Take(pageSize);
-        //    PageInfo pageInfo = new PageInfo { PageNumber = page, PageSize = pageSize, TotalItems = Sales.Count() };
-        //    IndexViewModel indexViewModel = new IndexViewModel { PageInfo = pageInfo, Sales = salesPerPage, Id = Id };
-        //    return View(indexViewModel);
-        //}
+        }      
     }
 }

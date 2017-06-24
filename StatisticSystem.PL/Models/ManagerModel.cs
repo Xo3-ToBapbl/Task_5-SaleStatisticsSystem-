@@ -8,6 +8,7 @@ namespace StatisticSystem.PL.Models
 {
     public class ManagerModel
     {
+        public string Id { get; set; }
         [Required(ErrorMessage ="Fill the field")]
         public string SecondName { get; set; }
         [Required(ErrorMessage = "Fill the field")]

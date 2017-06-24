@@ -12,14 +12,10 @@ namespace StatisticSystem.BLL.Interfaces
 {
     public interface IServiceBLL:IDisposable
     {
-        Task<OperationDetails> Create(ManagerDTO userDTO);
+        Task<OperationDetails> Add(ManagerDTO userDTO);
         Task<ClaimsIdentity> Authenticate(ManagerDTO userDTO);
         Task SetInitialData(ManagerDTO adminDTO, List<string> roles);
         Task<ManagerDTO> GetManagerById(string id);
-
-        KeyValuePair<int, IEnumerable<ManagerProfileDTO>> GetManagersSpan(int skipNum, int sizeNum);
-        KeyValuePair<int, IEnumerable<SaleDTO>> GetSalesSpan(string id, int skipNum, int sizeNum, string filter);
-        IEnumerable<ManagerProfileDTO> GetManagerProfiles();
         IEnumerable<SaleDTO> GetSalesByManager(string id);
     }
 }

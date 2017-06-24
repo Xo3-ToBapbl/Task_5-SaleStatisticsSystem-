@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using StatisticSystem.BLL.DTO;
 using StatisticSystem.BLL.Services;
 using StatisticSystem.DAL.EF;
@@ -7,7 +9,10 @@ using StatisticSystem.DAL.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.Entity;
 using System.Data.Entity.Validation;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ConsoleApplication
@@ -18,11 +23,10 @@ namespace ConsoleApplication
         {
             string connectionString = ConfigurationManager.ConnectionStrings["ManagersDataBaseConnection"].ConnectionString;
 
-            UnitOfWork dataBase = new UnitOfWork(connectionString);
-            var items = dataBase.GetSalesSpan("5428945e-6854-434f-851b-3091b6b4f6c7", 5, 5, "cost");
+            UnitOfWork context = new UnitOfWork(connectionString);
 
-
-            Console.WriteLine("Press any key to close.");
+            var manager = context.Managers.Find("Admin", "1111");
+            Console.WriteLine("Press any key to close.{0}", manager);
             Console.ReadKey();
         }
 

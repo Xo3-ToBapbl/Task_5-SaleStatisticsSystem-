@@ -18,6 +18,7 @@ namespace StatisticSystem.PL.Controllers
     public class AdminController : Controller
     {
         private int pageSize = 5;
+
         private IServiceBLL ServiceBLL
         {
             get
@@ -30,7 +31,7 @@ namespace StatisticSystem.PL.Controllers
         public ActionResult AdminPage(int page = 1)
         {
             ViewBag.Name = User.Identity.Name;
-            ViewBag.managerProfiles = ServiceBLL.GetManagerProfiles();           
+            //ViewBag.managerProfiles = ServiceBLL.GetManagerProfiles();           
             return View();
         }
 
@@ -50,7 +51,7 @@ namespace StatisticSystem.PL.Controllers
                 if (ModelState.IsValid)
                 {
                     ManagerDTO managerDTO = new ManagerDTO { UserName = model.SecondName, Password = model.Password, Role = model.Role };
-                    OperationDetails details = await ServiceBLL.Create(managerDTO);
+                    OperationDetails details = await ServiceBLL.Add(managerDTO);
                     if (details.Succedeed)
                     {
                         ViewBag.Message = details.Message;
@@ -88,7 +89,7 @@ namespace StatisticSystem.PL.Controllers
             {
                 Mapper.Initialize(cfg =>
                 {
-                    cfg.CreateMap<ManagerDTO, ManagerModel>();
+                    cfg.CreateMap<ManagerDTO, ManagerModel>().ForMember(dest=>dest.SecondName, opt=>opt.MapFrom(src=>src.UserName));
                 });
                 ManagerModel model = Mapper.Map<ManagerDTO, ManagerModel>(manager);
                 return View(model);
@@ -97,6 +98,15 @@ namespace StatisticSystem.PL.Controllers
             {
                 return HttpNotFound();
             }   
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> EditManager(ManagerModel model)
+        {
+            ViewBag.Message = "";
+
+            return null;
         }
 
         [HttpGet]

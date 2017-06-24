@@ -17,8 +17,8 @@ namespace StatisticSystem.DAL.Entities
         public string Product { get; set; }
         public int Cost { get; set; }
 
-        public string ManagerProfileId { get; set; }
+        public string ManagerId { get; set; }
 
-        public ManagerProfile ManagerProfile { get; set; }
+        public Manager Manager { get; set; }
     }
 }

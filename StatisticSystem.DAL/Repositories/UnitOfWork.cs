@@ -12,9 +12,9 @@ namespace StatisticSystem.DAL.Repositories
     public class UnitOfWork : IUnitOfWork
     {
         private DataBaseContext _dataBase;
+
         private ManagerRepository _managers;
         private RoleRepository _roles;
-        private ManagerProfileRepository _managersProfiles;
         private SalesRepository _sales;
 
 
@@ -42,14 +42,6 @@ namespace StatisticSystem.DAL.Repositories
             }
         }
 
-        public ManagerProfileRepository ManagerProfiles
-        {
-            get
-            {
-                return _managersProfiles;
-            }
-        }
-
         public SalesRepository Sales
         {
             get
@@ -65,7 +57,6 @@ namespace StatisticSystem.DAL.Repositories
 
             _managers = new ManagerRepository(new UserStore<Manager>(_dataBase));
             _roles = new RoleRepository(new RoleStore<Role>(_dataBase));
-            _managersProfiles = new ManagerProfileRepository(_dataBase);
             _sales = new SalesRepository(_dataBase);
         }
 
@@ -73,24 +64,7 @@ namespace StatisticSystem.DAL.Repositories
         public IEnumerable<Sale> GetSalesByManager(string Id)
         {
             return Sales.GetSalesByManager(Id);
-        }
-
-        public IEnumerable<ManagerProfile> GetManagerProfiles()
-        {
-            return ManagerProfiles.GetAll();
-        }
-
-        public KeyValuePair<int, IEnumerable<ManagerProfile>> GetManagerProfilesSpan(int skipNum, int sizeNum)
-        {
-            return ManagerProfiles.GetManagerProfilesSpan(skipNum, sizeNum);
-        }
-
-        public KeyValuePair<int, IEnumerable<Sale>> GetSalesSpan
-            (string id, int skipNum, int sizeNum, string filter)
-        {
-            return Sales.GetSalesSpan(id, skipNum, sizeNum, filter);
-        }
-
+        }               
 
         public async Task SaveAsync()
         {
@@ -119,8 +93,7 @@ namespace StatisticSystem.DAL.Repositories
                 if (disposing)
                 {
                     _managers.Dispose();
-                    _roles.Dispose();
-                    _managersProfiles.Dispose();
+                    _roles.Dispose();                   
                     _sales.Dispose();
                 }
                 this.disposed = true;

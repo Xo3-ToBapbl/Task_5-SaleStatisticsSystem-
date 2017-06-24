@@ -20,9 +20,10 @@
         <div>
             @Html.ValidationSummary(true)
             <div>
+                @Html.HiddenFor(model=>model.Id, new { value = Model.Id })
                 @Html.LabelFor(model => model.SecondName)
-                <div>
-                    @Html.EditorFor(model => model.SecondName, new { htmlAttributes = new { @class = "form-control" } })
+                <div>                   
+                    @Html.EditorFor(model => model.SecondName, new { value = Model.SecondName })
                     @Html.ValidationMessageFor(model => model.SecondName)
                 </div>
             </div>

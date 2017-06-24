@@ -13,9 +13,9 @@ namespace StatisticSystem.DAL.EF
     {
         public DataBaseContext(string connectionString):base(connectionString)
         {
+            Database.SetInitializer<DataBaseContext>(new DataBaseInitializer());
         }
 
-        public DbSet<ManagerProfile> ManagerProfiles { get; set; }
         public DbSet<Sale> Sales { get; set; }
     }
 }

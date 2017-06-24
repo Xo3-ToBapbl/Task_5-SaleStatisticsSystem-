@@ -9,6 +9,6 @@ namespace StatisticSystem.DAL.Entities
 {
     public class Manager: IdentityUser
     {
-        public virtual ManagerProfile ManagerProfile { get; set; }
+        public virtual ICollection<Sale> Sales { get; set; }
     }
 }

@@ -21,7 +21,7 @@ namespace StatisticSystem.DAL.Repositories
         public DataBaseContext DataBase { get; set; }
 
 
-        public void Create(Sale item)
+        public void Add(Sale item)
         {
             DataBase.Sales.Add(item);
         }
@@ -33,46 +33,8 @@ namespace StatisticSystem.DAL.Repositories
 
         public IEnumerable<Sale> GetSalesByManager(string Id)
         {
-            return DataBase.Sales.Where(x => x.ManagerProfileId == Id).ToList();
-        }
-
-        public KeyValuePair<int, IEnumerable<Sale>> GetSalesSpan
-            (string id, int skipNum, int sizeNum, string filter)
-        {
-            switch(filter)
-            {                
-                case ("cost"):
-                    {
-                        return new KeyValuePair<int, IEnumerable<Sale>>
-                (DataBase.Sales.Where(x=>x.ManagerProfileId==id).Count(),
-                 DataBase.Sales.Where(x => x.ManagerProfileId == id).OrderBy(sale=>sale.Cost).Skip(skipNum).Take(sizeNum).ToList());
-                    };
-                case ("product"):
-                    {
-                        return new KeyValuePair<int, IEnumerable<Sale>>
-                (DataBase.Sales.Where(x => x.ManagerProfileId == id).Count(),
-                 DataBase.Sales.Where(x => x.ManagerProfileId == id).OrderBy(sale => sale.Product).Skip(skipNum).Take(sizeNum).ToList());
-                    };
-                case ("client"):
-                    {
-                        return new KeyValuePair<int, IEnumerable<Sale>>
-                (DataBase.Sales.Where(x => x.ManagerProfileId == id).Count(),
-                 DataBase.Sales.Where(x => x.ManagerProfileId == id).OrderBy(sale => sale.Client).Skip(skipNum).Take(sizeNum).ToList());
-                    };
-                default:
-                    {
-                        return new KeyValuePair<int, IEnumerable<Sale>>
-                (DataBase.Sales.Where(x => x.ManagerProfileId == id).Count(),
-                 DataBase.Sales.Where(x => x.ManagerProfileId == id).OrderBy(sale => sale.Date).Skip(skipNum).Take(sizeNum).ToList());
-                    };
-            }
-            
-        }
-
-        public IEnumerable<Sale> GetAll(Expression<Func<Sale, string>> expression)
-        {
-            return DataBase.Sales.OrderBy(expression).ToList();
-        }
+            return DataBase.Sales.Where(x => x.ManagerId == Id).ToList();
+        }  
 
 
         public void Dispose()
