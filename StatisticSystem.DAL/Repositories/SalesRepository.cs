@@ -31,7 +31,7 @@ namespace StatisticSystem.DAL.Repositories
             return DataBase.Sales.FirstOrDefault(predicate);
         }
 
-        public IEnumerable<Sale> GetSalessById(string Id)
+        public IEnumerable<Sale> GetSalesByManager(string Id)
         {
             return DataBase.Sales.Where(x => x.ManagerProfileId == Id).ToList();
         }
@@ -44,26 +44,26 @@ namespace StatisticSystem.DAL.Repositories
                 case ("cost"):
                     {
                         return new KeyValuePair<int, IEnumerable<Sale>>
-                (DataBase.Sales.Count(),
-                 DataBase.Sales.OrderBy(sale=>sale.Cost).Skip(skipNum).Take(sizeNum).ToList());
+                (DataBase.Sales.Where(x=>x.ManagerProfileId==id).Count(),
+                 DataBase.Sales.Where(x => x.ManagerProfileId == id).OrderBy(sale=>sale.Cost).Skip(skipNum).Take(sizeNum).ToList());
                     };
                 case ("product"):
                     {
                         return new KeyValuePair<int, IEnumerable<Sale>>
-                (DataBase.Sales.Count(),
-                 DataBase.Sales.OrderBy(sale => sale.Product).Skip(skipNum).Take(sizeNum).ToList());
+                (DataBase.Sales.Where(x => x.ManagerProfileId == id).Count(),
+                 DataBase.Sales.Where(x => x.ManagerProfileId == id).OrderBy(sale => sale.Product).Skip(skipNum).Take(sizeNum).ToList());
                     };
                 case ("client"):
                     {
                         return new KeyValuePair<int, IEnumerable<Sale>>
-                (DataBase.Sales.Count(),
-                 DataBase.Sales.OrderBy(sale => sale.Client).Skip(skipNum).Take(sizeNum).ToList());
+                (DataBase.Sales.Where(x => x.ManagerProfileId == id).Count(),
+                 DataBase.Sales.Where(x => x.ManagerProfileId == id).OrderBy(sale => sale.Client).Skip(skipNum).Take(sizeNum).ToList());
                     };
                 default:
                     {
                         return new KeyValuePair<int, IEnumerable<Sale>>
-                (DataBase.Sales.Count(),
-                 DataBase.Sales.OrderBy(sale => sale.Date).Skip(skipNum).Take(sizeNum).ToList());
+                (DataBase.Sales.Where(x => x.ManagerProfileId == id).Count(),
+                 DataBase.Sales.Where(x => x.ManagerProfileId == id).OrderBy(sale => sale.Date).Skip(skipNum).Take(sizeNum).ToList());
                     };
             }
             

@@ -40,9 +40,9 @@ namespace StatisticSystem.DAL.Repositories
             return DataBase.ManagerProfiles.FirstOrDefault(predicate);
         }
 
-        public IEnumerable<ManagerProfile> GetAll(Expression<Func<ManagerProfile, string>> expression)
+        public IEnumerable<ManagerProfile> GetAll()
         {
-            return DataBase.ManagerProfiles.OrderBy(expression).ToList();
+            return DataBase.ManagerProfiles.ToList();
         }
 
         public KeyValuePair<int, IEnumerable<ManagerProfile>> GetManagerProfilesSpan(int skipNum, int sizeNum)

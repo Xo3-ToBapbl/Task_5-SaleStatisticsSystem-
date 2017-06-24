@@ -70,14 +70,14 @@ namespace StatisticSystem.DAL.Repositories
         }
 
 
-        public IEnumerable<Sale> GetSalesById(string Id)
+        public IEnumerable<Sale> GetSalesByManager(string Id)
         {
-            return (Sales as SalesRepository).GetSalessById(Id);
+            return Sales.GetSalesByManager(Id);
         }
 
-        public IEnumerable<ManagerProfile> GetManagerProfiles(Expression<Func<ManagerProfile, string>> expression)
+        public IEnumerable<ManagerProfile> GetManagerProfiles()
         {
-            return ManagerProfiles.GetAll(expression);
+            return ManagerProfiles.GetAll();
         }
 
         public KeyValuePair<int, IEnumerable<ManagerProfile>> GetManagerProfilesSpan(int skipNum, int sizeNum)

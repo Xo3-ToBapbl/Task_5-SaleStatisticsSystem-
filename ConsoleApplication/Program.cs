@@ -18,8 +18,8 @@ namespace ConsoleApplication
         {
             string connectionString = ConfigurationManager.ConnectionStrings["ManagersDataBaseConnection"].ConnectionString;
 
-            ServiceBLL dataBase = new ServiceBLL(connectionString);           
-            var items = dataBase.GetManagersSpan(3, 5);
+            UnitOfWork dataBase = new UnitOfWork(connectionString);
+            var items = dataBase.GetSalesSpan("5428945e-6854-434f-851b-3091b6b4f6c7", 5, 5, "cost");
 
 
             Console.WriteLine("Press any key to close.");

@@ -1,0 +1,54 @@
+﻿@model StatisticSystem.PL.Models.ManagerModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Add new manager</title>
+</head>
+<body>
+    <div>@Html.ActionLink("Back", "AdminPage")</div>
+    <div>@ViewBag.Message</div>
+    @using (Html.BeginForm()) 
+    {
+        @Html.AntiForgeryToken()
+        <div>
+            @Html.ValidationSummary(true)
+            <div>
+                @Html.LabelFor(model => model.SecondName)
+                <div>
+                    @Html.EditorFor(model => model.SecondName)
+                    @Html.ValidationMessageFor(model => model.SecondName)
+                </div>
+            </div>
+    
+            <div>
+                @Html.LabelFor(model => model.Password)
+                <div>
+                    @Html.EditorFor(model => model.Password)
+                    @Html.ValidationMessageFor(model => model.Password)
+                </div>
+            </div>
+    
+            <div>
+                @Html.LabelFor(model => model.Role)
+                <div>
+                    @Html.DropDownListFor(model => model.Role, new SelectList(StatisticSystem.PL.Models.ManagerModel.Roles))
+                </div>
+            </div>
+    
+            <div>
+                <br />
+                <div>
+                    <input type="submit" value="Add">
+                </div>
+            </div>
+        </div>
+    }
+</body>
+</html>

@@ -1,0 +1,36 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Sales</title>
+</head>
+<body>
+    <div>@Html.ActionLink("Back", "AdminPage")</div>
+    <table>
+        <tr>
+            <th>@Html.DisplayName("Client")</th>
+            <th>@Html.DisplayName("Date")</th>
+            <th>@Html.DisplayName("Product")</th>
+            <th>@Html.DisplayName("Cost")</th>
+        </tr>
+        @foreach (var item in ViewBag.Sales)
+        {
+            <tr>
+                <td>@item.Client</td>
+                <td>@item.Date</td>
+                <td>@item.Product</td>
+                <td>@item.Cost</td>
+                <td>
+                    @Html.ActionLink("Edit", "EditSale", new { id = item.Id }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id }) |
+                </td>    
+            </tr>
+        }
+    </table>
+</body>
+</html>

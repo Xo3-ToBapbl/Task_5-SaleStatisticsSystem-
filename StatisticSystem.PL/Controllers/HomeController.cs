@@ -53,9 +53,10 @@ namespace StatisticSystem.PL.Controllers
                 {
                     AuthenticationManager.SignOut();
                     AuthenticationManager.SignIn(new AuthenticationProperties { IsPersistent = false }, claim);
-                    if (User.IsInRole("admin"))
+                    string userRole = claim.Claims.Last().Value;
+                    if (userRole == "admin")
                         return RedirectToAction("AdminPage", "Admin");
-                    else if (User.IsInRole("user"))
+                    else if (userRole == "user")
                     {
                         return RedirectToAction("ManagerPage");
                     }

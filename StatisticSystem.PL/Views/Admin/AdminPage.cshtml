@@ -1,7 +1,4 @@
-﻿@using StatisticSystem.PL.Helpers
-@model StatisticSystem.PL.Models.IndexViewModel
-
-@{
+﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -14,28 +11,25 @@
 </head>
 <body>
     <div> 
-        <h1>Hello @ViewBag.Name admin!</h1> 
+        <h3>Hello administrator @ViewBag.Name !</h3> 
     </div>
+    <div>@Html.ActionLink("Add new manager", "AddNewManager")</div>
     <table>
         <tr>
-            <td> Manager second name</td>
-            <td>See details</td>
-            <td>Edit profile</td>
-            <td>Delete</td>
+            <th>@Html.DisplayName("Second Name")</th>
         </tr>
-        @foreach (var item in Model.ManagerProfiles)
+
+        @foreach (var item in ViewBag.ManagerProfiles)
         {
             <tr>
                 <td>@item.SecondName</td>
-                <td><a href="/Home/Details?Id=@item.Id">Details</a></td>
-                <td><a href="/Home/Edit?Id=@item.Id">Edit</a></td>
-                <td><a href="/Home/Delte?Id=@item.Id">Delete</a></td>
+                <td>
+                    @Html.ActionLink("Edit", "EditManager", new { id=item.Id}) |
+                    @Html.ActionLink("Sales", "Sales", new { id = item.Id }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id }) |
+                </td>             
             </tr>
         }
     </table>
-    <br />
-    <div>
-        @Html.PageLinks(Model.PageInfo, x => Url.Action("AdminPage", new { page = x }))
-    </div>
 </body>
 </html>

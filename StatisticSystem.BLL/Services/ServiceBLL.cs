@@ -10,6 +10,7 @@ using StatisticSystem.DAL.Entities;
 using Microsoft.AspNet.Identity;
 using AutoMapper;
 using System.Linq.Expressions;
+using System.Linq;
 
 namespace StatisticSystem.BLL.Services
 {
@@ -27,17 +28,26 @@ namespace StatisticSystem.BLL.Services
         }
 
 
-        public async Task Create(ManagerDTO managerDTO)
+        public async Task<OperationDetails> Create(ManagerDTO managerDTO)
         {
             var manager = await DataBase.Managers.FindByNameAsync(managerDTO.UserName);
             if (manager == null)
             {
                 var managerDAL = new Manager { UserName = managerDTO.UserName };
-                await DataBase.Managers.CreateAsync(managerDAL, managerDTO.Password);
+                var result = await DataBase.Managers.CreateAsync(managerDAL, managerDTO.Password);
+                if (result.Errors.Count() > 0)
+                {
+                    return new OperationDetails(false, result.Errors.FirstOrDefault(), "");
+                }
                 await DataBase.Managers.AddToRoleAsync(managerDAL.Id, managerDTO.Role);
                 ManagerProfile managerDALProfile = new ManagerProfile { Id = managerDAL.Id, SecondName = managerDTO.UserName };
                 DataBase.ManagerProfiles.Create(managerDALProfile);
                 await DataBase.SaveAsync();
+                return new OperationDetails(true, "Manager add to service.", "");
+            }
+            else
+            {
+                return new OperationDetails(false, "Manager with current name already exist.", "UserName");
             }
         }
 
@@ -55,6 +65,24 @@ namespace StatisticSystem.BLL.Services
         public Task SetInitialData(ManagerDTO adminDTO, List<string> roles)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<ManagerDTO> GetManagerById(string id)
+        {
+            Manager managerDAL = await DataBase.Managers.FindByIdAsync(id);
+            var role = await DataBase.Managers.GetRolesAsync(id);
+            if (managerDAL!=null)
+            {
+                Mapper.Initialize(cfg =>
+                {
+                    cfg.CreateMap<Manager, ManagerDTO>();
+                });
+
+                ManagerDTO managerDTO = Mapper.Map<Manager, ManagerDTO>(managerDAL);
+                managerDTO.Role = role.FirstOrDefault();
+                return managerDTO;
+            }
+            return null;
         }
 
 
@@ -79,7 +107,7 @@ namespace StatisticSystem.BLL.Services
 
         public KeyValuePair<int, IEnumerable<SaleDTO>> GetSalesSpan(string id, int skipNum, int sizeNum, string filter)
         {
-            KeyValuePair<int, IEnumerable<Sale>> pairDAL = DataBase.GetSalesSpan(id, sizeNum, sizeNum, filter);
+            KeyValuePair<int, IEnumerable<Sale>> pairDAL = DataBase.GetSalesSpan(id, skipNum, sizeNum, filter);
 
             Mapper.Initialize(cfg =>
             {
@@ -94,22 +122,28 @@ namespace StatisticSystem.BLL.Services
 
         }
 
-        public IEnumerable<ManagerProfileDTO> GetManagers(Expression<Func<ManagerProfileDTO, string>> expression)
+        public IEnumerable<SaleDTO> GetSalesByManager(string id)
+        {
+            IEnumerable<Sale> salesDAL = DataBase.GetSalesByManager(id);
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<Sale, SaleDTO>();
+            });
+            Mapper.AssertConfigurationIsValid();
+            return Mapper.Map<IEnumerable<Sale>, IEnumerable<SaleDTO>>(salesDAL);
+
+        }
+
+        public IEnumerable<ManagerProfileDTO> GetManagerProfiles()
         {
             Mapper.Initialize(cfg =>
             {
                 cfg.CreateMap<ManagerProfile, ManagerProfileDTO>().
-                    ForMember(dest=>dest.Sales, option=>option.Ignore());
-                cfg.CreateMap<ManagerProfileDTO, ManagerProfile>().
-                    ForMember(dest => dest.Sales, option => option.Ignore()).
-                    ForMember(dest=>dest.Manager, option=>option.Ignore());
+                    ForMember(dest=>dest.Sales, option=>option.Ignore());                
             });
             Mapper.AssertConfigurationIsValid();
 
-            Expression<Func<ManagerProfile, string>> expressionDAL = Mapper.
-                Map<Expression<Func<ManagerProfileDTO, string>>, Expression<Func<ManagerProfile, string>>>(expression);
-
-            IEnumerable<ManagerProfile> managersDAL = DataBase.GetManagerProfiles(expressionDAL);
+            IEnumerable<ManagerProfile> managersDAL = DataBase.GetManagerProfiles();
             if (managersDAL!=null)
             {
                 return Mapper.Map<IEnumerable<ManagerProfile>, IEnumerable<ManagerProfileDTO>>(managersDAL);
