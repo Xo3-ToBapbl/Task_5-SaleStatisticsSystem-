@@ -22,9 +22,8 @@
         @foreach (var item in ViewBag.ManagerProfiles)
         {
             <tr>
-                <td>@item.SecondName</td>
+                <td>@item.UserName</td>
                 <td>
-                    @Html.ActionLink("Edit", "EditManager", new { id=item.Id}) |
                     @Html.ActionLink("Sales", "Sales", new { id = item.Id }) |
                     @Html.ActionLink("Delete", "Delete", new { id = item.Id }) |
                 </td>             

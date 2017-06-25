@@ -23,58 +23,13 @@ namespace ConsoleApplication
         {
             string connectionString = ConfigurationManager.ConnectionStrings["ManagersDataBaseConnection"].ConnectionString;
 
-            UnitOfWork context = new UnitOfWork(connectionString);
+            //ServiceBLL context = new ServiceBLL(connectionString);
+            DateTime Date = DateTime.Parse("25/06/2017 0:00:00");
 
-            var manager = context.Managers.Find("Admin", "1111");
-            Console.WriteLine("Press any key to close.{0}", manager);
+            //var manager = context.GetManagers();
+            Console.WriteLine("Press any key to close");
             Console.ReadKey();
         }
 
     }
 }
-
-
-//var admin = new Manager() { UserName = "Adminus" };
-//var result = await dataBase.Managers.CreateAsync(admin, "1111");
-//await dataBase.Roles.CreateAsync(new Role() { Name = "admin" });
-//                await dataBase.Roles.CreateAsync(new Role() { Name = "user" });
-//                await dataBase.Managers.AddToRoleAsync(admin.Id, "admin");
-
-//ManagerProfile managerProfile = new ManagerProfile { Id = admin.Id, SecondName = admin.UserName };
-//dataBase.ManagerProfiles.Create(managerProfile);
-
-
-
-//var user = new Manager() { UserName = "Kulagin" };
-//var result = await dataBase.Managers.CreateAsync(user, "2222");
-//await dataBase.Managers.AddToRoleAsync(user.Id, "user");
-
-//ManagerProfile managerProfile = new ManagerProfile
-//{
-//    Id = user.Id,
-//    SecondName = user.UserName,
-//    #region Sales
-//    Sales = new List<Sale>()
-//                    {
-//                        new Sale()
-//                        {
-//                            Id = Guid.NewGuid().ToString(),
-//                            Client = "Vasily Utkin",
-//                            Date = DateTime.Now,
-//                            Product = "IPhone 6",
-//                            Cost = 880
-//                        },
-//                        new Sale()
-//                        {
-//                            Id = Guid.NewGuid().ToString(),
-//                            Client = "Pit Pitterson",
-//                            Date = DateTime.Now,
-//                            Product = "IPhone 6s",
-//                            Cost = 920
-//                        },
-//                    }
-//    #endregion
-//};
-//dataBase.ManagerProfiles.Create(managerProfile);
-
-//                await dataBase.SaveAsync();

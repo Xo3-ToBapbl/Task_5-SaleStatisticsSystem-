@@ -11,6 +11,7 @@ using Microsoft.AspNet.Identity;
 using AutoMapper;
 using System.Linq.Expressions;
 using System.Linq;
+using System.Data;
 
 namespace StatisticSystem.BLL.Services
 {
@@ -60,20 +61,6 @@ namespace StatisticSystem.BLL.Services
             return claim;
         }
 
-        public async Task SetInitialData(ManagerDTO userDTO, List<string> roles)
-        {
-            foreach(string roleName in roles)
-            {
-                var role = await DataBase.Roles.FindByNameAsync(roleName);
-                if (role == null)
-                {
-                    role = new Role { Name = roleName };
-                    await DataBase.Roles.CreateAsync(role);
-                }
-            }
-            await Add(userDTO);
-        }
-
         public async Task<ManagerDTO> GetManagerById(string id)
         {
             Manager managerDAL = await DataBase.Managers.FindByIdAsync(id);
@@ -92,6 +79,16 @@ namespace StatisticSystem.BLL.Services
             return null;
         }
 
+        public IEnumerable<ManagerDTO> GetManagers()
+        {
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<Manager, ManagerDTO>().ForMember(dest=>dest.Sales, opt=>opt.Ignore());
+            });
+            IEnumerable<Manager> managerDAL = DataBase.Managers.Users.ToList();
+            return Mapper.Map<IEnumerable <Manager> ,IEnumerable<ManagerDTO>>(managerDAL);
+        }
+
         public IEnumerable<SaleDTO> GetSalesByManager(string id)
         {
             IEnumerable<Sale> salesDAL = DataBase.GetSalesByManager(id);
@@ -102,6 +99,26 @@ namespace StatisticSystem.BLL.Services
             Mapper.AssertConfigurationIsValid();
             return Mapper.Map<IEnumerable<Sale>, IEnumerable<SaleDTO>>(salesDAL);
 
+        }
+
+        public OperationDetails UpdateSale(SaleDTO saleDTO)
+        {
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<SaleDTO, Sale>();
+            });
+
+            OperationDetails details;
+            try
+            {
+                DataBase.UpdateSale(Mapper.Map<SaleDTO, Sale>(saleDTO));
+                details = new OperationDetails(true, "Sale update in data base.", "");
+            }
+            catch (DataException)
+            {
+                details = new OperationDetails(true, "Unable to update sale. Inner error.", "");
+            }
+            return details;
         }
 
 

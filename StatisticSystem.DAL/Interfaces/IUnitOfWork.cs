@@ -14,8 +14,10 @@ namespace StatisticSystem.DAL.Interfaces
         ManagerRepository Managers { get; }
         RoleRepository Roles { get; }
         SalesRepository Sales { get; }
-        IEnumerable<Sale> GetSalesByManager(string Id);
 
+        IEnumerable<Sale> GetSalesByManager(string Id);
+        void UpdateSale(Sale sale);
         Task SaveAsync();
+        void SaveChanges();
     }
 }

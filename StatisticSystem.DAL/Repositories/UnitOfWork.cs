@@ -50,6 +50,11 @@ namespace StatisticSystem.DAL.Repositories
             }
         }
 
+        public void UpdateSale(Sale sale)
+        {
+            Sales.Update(sale);
+        }
+
 
         public UnitOfWork(string connectionString)
         {

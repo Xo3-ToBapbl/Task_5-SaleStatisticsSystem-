@@ -14,8 +14,9 @@ namespace StatisticSystem.BLL.Interfaces
     {
         Task<OperationDetails> Add(ManagerDTO userDTO);
         Task<ClaimsIdentity> Authenticate(ManagerDTO userDTO);
-        Task SetInitialData(ManagerDTO adminDTO, List<string> roles);
         Task<ManagerDTO> GetManagerById(string id);
         IEnumerable<SaleDTO> GetSalesByManager(string id);
+        IEnumerable<ManagerDTO> GetManagers();
+        OperationDetails UpdateSale(SaleDTO saleDTO);
     }
 }

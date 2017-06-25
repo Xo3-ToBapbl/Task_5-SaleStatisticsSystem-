@@ -26,6 +26,12 @@ namespace StatisticSystem.DAL.Repositories
             DataBase.Sales.Add(item);
         }
 
+        public void Update(Sale item)
+        {
+            DataBase.Entry(item).State = System.Data.Entity.EntityState.Modified;
+            DataBase.SaveChanges();
+        }
+
         public Sale Find(Func<Sale, bool> predicate)
         {
             return DataBase.Sales.FirstOrDefault(predicate);

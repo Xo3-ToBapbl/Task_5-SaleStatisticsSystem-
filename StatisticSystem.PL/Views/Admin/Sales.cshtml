@@ -1,4 +1,6 @@
-﻿@{
+﻿@model IEnumerable<StatisticSystem.PL.Models.SaleModel>
+
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -18,7 +20,7 @@
             <th>@Html.DisplayName("Product")</th>
             <th>@Html.DisplayName("Cost")</th>
         </tr>
-        @foreach (var item in ViewBag.Sales)
+        @foreach (StatisticSystem.PL.Models.SaleModel item in Model)
         {
             <tr>
                 <td>@item.Client</td>
@@ -26,7 +28,7 @@
                 <td>@item.Product</td>
                 <td>@item.Cost</td>
                 <td>
-                    @Html.ActionLink("Edit", "EditSale", new { id = item.Id }) |
+                    @Html.ActionLink("Edit", "EditSale", new { id = item.Id, client = item.Client, date = item.Date, product = item.Product, cost = item.Cost, managerId = item.ManagerId }) |
                     @Html.ActionLink("Delete", "Delete", new { id = item.Id }) |
                 </td>    
             </tr>

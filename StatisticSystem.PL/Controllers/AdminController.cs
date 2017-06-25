@@ -31,7 +31,7 @@ namespace StatisticSystem.PL.Controllers
         public ActionResult AdminPage(int page = 1)
         {
             ViewBag.Name = User.Identity.Name;
-            //ViewBag.managerProfiles = ServiceBLL.GetManagerProfiles();           
+            ViewBag.managerProfiles = ServiceBLL.GetManagers();           
             return View();
         }
 
@@ -72,49 +72,65 @@ namespace StatisticSystem.PL.Controllers
                 ViewBag.Message = "Unable to add manager. Inner error.";
             }
             return View(model);
-        }
-
-        [HttpGet]
-        public async Task<ActionResult> EditManager(string id)
-        {
-            ViewBag.Message = "";
-
-            if (id==null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-
-            ManagerDTO manager = await ServiceBLL.GetManagerById(id);
-            if (manager != null)
-            {
-                Mapper.Initialize(cfg =>
-                {
-                    cfg.CreateMap<ManagerDTO, ManagerModel>().ForMember(dest=>dest.SecondName, opt=>opt.MapFrom(src=>src.UserName));
-                });
-                ManagerModel model = Mapper.Map<ManagerDTO, ManagerModel>(manager);
-                return View(model);
-            }
-            else
-            {
-                return HttpNotFound();
-            }   
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> EditManager(ManagerModel model)
-        {
-            ViewBag.Message = "";
-
-            return null;
-        }
+        } 
 
         [HttpGet]
         [Authorize(Roles = "admin")]
         public ActionResult Sales(string id)
         {
-            ViewBag.Sales = ServiceBLL.GetSalesByManager(id);
-            return View();
+            IEnumerable<SaleDTO> salesDTO = ServiceBLL.GetSalesByManager(id);
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<SaleDTO, SaleModel>().
+                ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date.ToString("d"))).
+                ForMember(dest => dest.Cost, opt => opt.MapFrom(src => src.Cost.ToString()));
+            });
+            IEnumerable<SaleModel> salesModel = Mapper.Map<IEnumerable<SaleDTO>, IEnumerable<SaleModel>>(salesDTO);
+            return View(salesModel);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "admin")]
+        public ActionResult EditSale(string id, string client, string date, string product, string cost, string managerId)
+        {
+            SaleModel saleModel = new SaleModel { Id = id, Client = client, Date = date, Product = product, Cost = cost, ManagerId= managerId };
+            return View(saleModel);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "admin")]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditSale(SaleModel saleModel)
+        {
+            if (ModelState.IsValid)
+            {
+                DateTime dateValue;
+                if (!DateTime.TryParse(saleModel.Date, out dateValue))
+                {
+                    ViewBag.Message = "Current date is not exist.";
+                }
+                else
+                {
+                    Mapper.Initialize(cfg =>
+                    {
+                        cfg.CreateMap<SaleModel, SaleDTO>().
+                        ForMember(dest => dest.Date, opt => opt.MapFrom(src => DateTime.Parse(src.Date))).
+                        ForMember(dest => dest.Cost, opt => opt.MapFrom(src => Convert.ToInt32(src.Cost)));
+                    });
+                    SaleDTO saleDTO = Mapper.Map<SaleModel, SaleDTO>(saleModel);
+                    OperationDetails detail = ServiceBLL.UpdateSale(saleDTO);
+                    ViewBag.Message = detail.Message;
+                }                 
+            }
+            else
+            {
+                return View(saleModel);
+            }
+            return View(saleModel);
         }
     }
 }
+
+//string id, string client, string date, string product, string cost
+//new { id = item.Id, client=item.Client, date=item.Date, product=item.Product, cost=item.Cost }
+//ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date.ToString())).
