@@ -32,14 +32,47 @@ namespace StatisticSystem.DAL.Repositories
             DataBase.SaveChanges();
         }
 
+        public void Delete(string id)
+        {
+            Sale sale = DataBase.Sales.Find(id);
+            DataBase.Entry(sale).State = System.Data.Entity.EntityState.Deleted;
+            DataBase.SaveChanges();
+        }
+
         public Sale Find(Func<Sale, bool> predicate)
         {
             return DataBase.Sales.FirstOrDefault(predicate);
         }
 
-        public IEnumerable<Sale> GetSalesByManager(string Id)
+        public IEnumerable<Sale> GetSalesByManager(string Id, string filter, string filterValue)
         {
-            return DataBase.Sales.Where(x => x.ManagerId == Id).ToList();
+            switch(filter)
+            {
+                case ("Date"):
+                    {
+                        DateTime outDate;
+                        if (DateTime.TryParse(filterValue, out outDate))
+                        {
+                            return DataBase.Sales.Where(sale => sale.ManagerId == Id && sale.Date == outDate).ToList();
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                    }
+                case ("Client"):
+                    {
+                        return DataBase.Sales.Where(sale => sale.ManagerId == Id && sale.Client == filterValue).ToList();
+                    }
+                case ("Product"):
+                    {
+                        return DataBase.Sales.Where(sale => sale.ManagerId == Id && sale.Product == filterValue).ToList();
+                    }
+                default:
+                    {
+                        return DataBase.Sales.Where(sale => sale.ManagerId == Id).ToList();
+                    }
+            }
         }  
 
 

@@ -89,9 +89,9 @@ namespace StatisticSystem.BLL.Services
             return Mapper.Map<IEnumerable <Manager> ,IEnumerable<ManagerDTO>>(managerDAL);
         }
 
-        public IEnumerable<SaleDTO> GetSalesByManager(string id)
+        public IEnumerable<SaleDTO> GetSalesByManager(string id, string filter, string filterValue)
         {
-            IEnumerable<Sale> salesDAL = DataBase.GetSalesByManager(id);
+            IEnumerable<Sale> salesDAL = DataBase.GetSalesByManager(id, filter, filterValue);
             Mapper.Initialize(cfg =>
             {
                 cfg.CreateMap<Sale, SaleDTO>();
@@ -111,7 +111,7 @@ namespace StatisticSystem.BLL.Services
             OperationDetails details;
             try
             {
-                DataBase.UpdateSale(Mapper.Map<SaleDTO, Sale>(saleDTO));
+                DataBase.Sales.Update(Mapper.Map<SaleDTO, Sale>(saleDTO));
                 details = new OperationDetails(true, "Sale update in data base.", "");
             }
             catch (DataException)
@@ -120,6 +120,23 @@ namespace StatisticSystem.BLL.Services
             }
             return details;
         }
+
+        public OperationDetails DeleteSale(string id)
+        {
+            OperationDetails details;
+            try
+            {
+                DataBase.Sales.Delete(id);
+                details = new OperationDetails(true, "Sale delete from data base.", "");
+            }
+            catch (DataException)
+            {
+                details = new OperationDetails(true, "Unable to delete sale. Inner error.", "");
+            }
+            return details;
+        }
+
+
 
 
         public void Dispose()

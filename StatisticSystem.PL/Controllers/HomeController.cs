@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using System.Web.Helpers;
 
 namespace StatisticSystem.PL.Controllers
 {
@@ -28,6 +29,17 @@ namespace StatisticSystem.PL.Controllers
             {
                 return HttpContext.GetOwinContext().Authentication;
             }
+        }
+
+        public JsonResult GetProducts()
+        {
+             var result = new List<PieChartItem>();
+        result.Add(new PieChartItem { Name = "Ukraine", Value = 8 });
+        result.Add(new PieChartItem { Name = "Russia", Value = 6 });
+        result.Add(new PieChartItem { Name = "Belarus", Value = 6 });
+        result.Add(new PieChartItem { Name = "USA", Value = 4 });
+    
+        return Json(new { Countries = result }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]

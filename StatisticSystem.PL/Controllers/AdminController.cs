@@ -12,13 +12,12 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using PagedList;
 
 namespace StatisticSystem.PL.Controllers
 {
     public class AdminController : Controller
     {
-        private int pageSize = 5;
-
         private IServiceBLL ServiceBLL
         {
             get
@@ -28,11 +27,16 @@ namespace StatisticSystem.PL.Controllers
         }
 
         [Authorize(Roles = "admin")]
-        public ActionResult AdminPage(int page = 1)
+        public ActionResult AdminPage()
         {
             ViewBag.Name = User.Identity.Name;
-            ViewBag.managerProfiles = ServiceBLL.GetManagers();           
-            return View();
+            IEnumerable<ManagerDTO> managersDTO = ServiceBLL.GetManagers();
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<ManagerDTO, ManagerModel>().ForMember(dest=>dest.SecondName, opt=>opt.MapFrom(src=>src.UserName));
+            });
+            IEnumerable<ManagerModel> managersModel = Mapper.Map<IEnumerable<ManagerDTO>, IEnumerable<ManagerModel>>(managersDTO);                   
+            return View(managersModel);
         }
 
         [HttpGet]
@@ -76,17 +80,34 @@ namespace StatisticSystem.PL.Controllers
 
         [HttpGet]
         [Authorize(Roles = "admin")]
-        public ActionResult Sales(string id)
+        public ActionResult Sales(string ManagerId)
         {
-            IEnumerable<SaleDTO> salesDTO = ServiceBLL.GetSalesByManager(id);
-            Mapper.Initialize(cfg =>
+            SaleCollectionModel model = GetSaleCollectionModel(ManagerId);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "admin")]
+        public ActionResult Sales(SaleCollectionModel model)
+        {
+            if(model.Filter=="Date")
             {
-                cfg.CreateMap<SaleDTO, SaleModel>().
-                ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date.ToString("d"))).
-                ForMember(dest => dest.Cost, opt => opt.MapFrom(src => src.Cost.ToString()));
-            });
-            IEnumerable<SaleModel> salesModel = Mapper.Map<IEnumerable<SaleDTO>, IEnumerable<SaleModel>>(salesDTO);
-            return View(salesModel);
+                DateTime outDate;
+                if (DateTime.TryParse(model.FilterValue, out outDate))
+                {
+                    model = GetSaleCollectionModel(model.ManagerId, model.Filter, model.FilterValue);
+                }
+                else
+                {
+                    ViewBag.Message = "Please, enter correct date.";
+                }
+            }
+            else
+            {
+                model = GetSaleCollectionModel(model.ManagerId, model.Filter, model.FilterValue);
+            }
+            return View(model);
         }
 
         [HttpGet]
@@ -127,6 +148,38 @@ namespace StatisticSystem.PL.Controllers
                 return View(saleModel);
             }
             return View(saleModel);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "admin")]
+        public ActionResult DeleteSale(string id, string client, string date, string product, string cost, string managerId)
+        {
+            ViewBag.Message = "Are Your sure? Delete this sale?";
+            SaleModel saleModel = new SaleModel { Id = id, Client = client, Date = date, Product = product, Cost = cost, ManagerId = managerId };
+            return View(saleModel);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "admin")]
+        public ActionResult DeleteSale(SaleModel saleModel)
+        {
+            OperationDetails detail = ServiceBLL.DeleteSale(saleModel.Id);
+            ViewBag.Message = detail.Message;
+            return View(saleModel);
+        }
+
+
+        private SaleCollectionModel GetSaleCollectionModel(string id, string filter="None", string filterValue="None")
+        {
+            IEnumerable<SaleDTO> salesDTO = ServiceBLL.GetSalesByManager(id, filter, filterValue);
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<SaleDTO, SaleModel>().
+                ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date.ToString("d"))).
+                ForMember(dest => dest.Cost, opt => opt.MapFrom(src => src.Cost.ToString()));
+            });
+            IEnumerable<SaleModel> sales = Mapper.Map<IEnumerable<SaleDTO>, IEnumerable<SaleModel>>(salesDTO);
+            return new SaleCollectionModel { Sales = sales };
         }
     }
 }

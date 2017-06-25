@@ -50,11 +50,6 @@ namespace StatisticSystem.DAL.Repositories
             }
         }
 
-        public void UpdateSale(Sale sale)
-        {
-            Sales.Update(sale);
-        }
-
 
         public UnitOfWork(string connectionString)
         {
@@ -66,9 +61,9 @@ namespace StatisticSystem.DAL.Repositories
         }
 
 
-        public IEnumerable<Sale> GetSalesByManager(string Id)
+        public IEnumerable<Sale> GetSalesByManager(string Id, string filter, string filterValue)
         {
-            return Sales.GetSalesByManager(Id);
+            return Sales.GetSalesByManager(Id, filter, filterValue);
         }               
 
         public async Task SaveAsync()

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<StatisticSystem.PL.Models.SaleModel>
+﻿@model StatisticSystem.PL.Models.SaleCollectionModel
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -13,6 +13,23 @@
 </head>
 <body>
     <div>@Html.ActionLink("Back", "AdminPage")</div>
+    <br />
+    <div>
+        @Html.Label("Filter by:")
+        <div>
+            @using (Html.BeginForm())
+            {
+                @Html.HiddenFor(model => model.ManagerId)
+                <div>@ViewBag.Message</div>
+                @Html.DropDownListFor(model=>model.Filter, new SelectList(StatisticSystem.PL.Models.SaleCollectionModel.Filtres))               
+                <br />
+                @Html.Label("Filter value:")
+                <br />
+                @Html.EditorFor(model => model.FilterValue)
+                <input type="submit" value="Filter">
+            }              
+        </div>
+    </div>
     <table>
         <tr>
             <th>@Html.DisplayName("Client")</th>
@@ -20,7 +37,7 @@
             <th>@Html.DisplayName("Product")</th>
             <th>@Html.DisplayName("Cost")</th>
         </tr>
-        @foreach (StatisticSystem.PL.Models.SaleModel item in Model)
+        @foreach (StatisticSystem.PL.Models.SaleModel item in Model.Sales)
         {
             <tr>
                 <td>@item.Client</td>
@@ -29,7 +46,7 @@
                 <td>@item.Cost</td>
                 <td>
                     @Html.ActionLink("Edit", "EditSale", new { id = item.Id, client = item.Client, date = item.Date, product = item.Product, cost = item.Cost, managerId = item.ManagerId }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.Id }) |
+                    @Html.ActionLink("Delete", "DeleteSale", new { id = item.Id, client = item.Client, date = item.Date, product = item.Product, cost = item.Cost, managerId = item.ManagerId }) |
                 </td>    
             </tr>
         }

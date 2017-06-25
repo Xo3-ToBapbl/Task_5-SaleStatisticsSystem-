@@ -1,4 +1,6 @@
-﻿@{
+﻿@model IEnumerable<StatisticSystem.PL.Models.ManagerModel>
+
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -16,16 +18,15 @@
     <div>@Html.ActionLink("Add new manager", "AddNewManager")</div>
     <table>
         <tr>
-            <th>@Html.DisplayName("Second Name")</th>
+            <th>@Html.DisplayName("Manager second Name")</th>
         </tr>
 
-        @foreach (var item in ViewBag.ManagerProfiles)
+        @foreach (var item in Model)
         {
             <tr>
-                <td>@item.UserName</td>
+                <td>@item.SecondName</td>
                 <td>
-                    @Html.ActionLink("Sales", "Sales", new { id = item.Id }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.Id }) |
+                    @Html.ActionLink("Sales", "Sales", new { ManagerId = item.Id })
                 </td>             
             </tr>
         }

@@ -8,9 +8,9 @@ namespace StatisticSystem.PL.Models
 {
     public class LoginModel
     {
-        [Required]
+        [Required(ErrorMessage ="Fill the field")]
         public string UserName { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Fill the field")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
     }

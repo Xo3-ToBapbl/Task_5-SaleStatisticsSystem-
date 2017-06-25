@@ -1,0 +1,44 @@
+﻿@model StatisticSystem.PL.Models.SaleModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Sales</title>
+</head>
+<body>
+    <div>@Html.ActionLink("Back", "Sales", new { ManagerId = Model.ManagerId })</div>
+@using (Html.BeginForm())
+{
+    @Html.HiddenFor(model => model.Id)
+    @Html.HiddenFor(model => model.ManagerId)
+    <div>@ViewBag.Message</div>
+    <table>
+        <tr>
+            <th>@Html.DisplayName("Client")</th>
+            <th>@Html.DisplayName("Date")</th>
+            <th>@Html.DisplayName("Product")</th>
+            <th>@Html.DisplayName("Cost")</th>
+        </tr>
+
+        <tr>
+                <td>@Model.Client</td>
+                <td>@Model.Date</td>
+                <td>@Model.Product</td>
+                <td>@Model.Cost</td> 
+        </tr>
+    </table>
+    <br />
+    <div>
+        <div>
+            <input type="submit" value="Yes" />
+        </div>
+    </div>
+}
+</body>
+</html>
