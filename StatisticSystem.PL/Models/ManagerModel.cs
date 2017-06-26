@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
 
 namespace StatisticSystem.PL.Models
 {
@@ -23,6 +20,5 @@ namespace StatisticSystem.PL.Models
                 return new List<string> { "user", "admin" };
             }
         }
-
     }
 }

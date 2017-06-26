@@ -13,7 +13,7 @@
     @Styles.Render("~/Content/Site.css")
 </head>
 <body>
-    <div>@Html.ActionLink("Back", "AdminPage")</div>
+    <div>@Html.ActionLink("Back", "ManagerPage")</div>
     <br />
     <div>
         @Html.Label("Filter by:")
@@ -46,10 +46,6 @@
                 <td>@item.Date</td>
                 <td>@item.Product</td>
                 <td>@item.Cost</td>
-                <td>
-                    @Html.ActionLink("Edit", "EditSale", new { id = item.Id, client = item.Client, date = item.Date, product = item.Product, cost = item.Cost, managerId = item.ManagerId }) |
-                    @Html.ActionLink("Delete", "DeleteSale", new { id = item.Id, client = item.Client, date = item.Date, product = item.Product, cost = item.Cost, managerId = item.ManagerId }) |
-                </td>    
             </tr>
         }
     </table>
@@ -78,7 +74,7 @@
             data.addColumn('string', 'Date');
             data.addColumn('number', 'Count');
 
-            $.getJSON('@Url.Action("GetProducts", "Admin", new { managerId = Html.ValueFor(model=>model.ManagerId) })', null,
+            $.getJSON('@Url.Action("GetProducts", "User", new { managerId = Html.ValueFor(model=>model.ManagerId) })', null,
                                                           function (result) {
                                                               if (result.Dates.length) {
                                                                   $.each(result.Dates, function (index, c) {

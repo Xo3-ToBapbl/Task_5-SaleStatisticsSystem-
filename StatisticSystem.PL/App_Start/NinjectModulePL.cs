@@ -1,10 +1,6 @@
 ﻿using Ninject.Modules;
 using StatisticSystem.BLL.Interfaces;
 using StatisticSystem.BLL.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace StatisticSystem.PL.App_Start
 {
@@ -16,7 +12,6 @@ namespace StatisticSystem.PL.App_Start
         {
             _connectionString = connectionString;
         }
-
 
         public override void Load()
         {

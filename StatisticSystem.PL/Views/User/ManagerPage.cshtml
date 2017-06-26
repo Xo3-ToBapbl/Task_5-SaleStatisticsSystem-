@@ -9,14 +9,13 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Admin Page</title>
+    <title>Manager Page</title>
     @Styles.Render("~/Content/Site.css")
 </head>
 <body>
     <div> 
-        <h3>Hello administrator @ViewBag.Name !</h3> 
+        <h3>Hello manager @ViewBag.Name !</h3> 
     </div>
-    <div>@Html.ActionLink("Add new manager", "AddNewManager")</div>
     <table>
         <tr>
             <th>@Html.DisplayName("Manager second Name")</th>

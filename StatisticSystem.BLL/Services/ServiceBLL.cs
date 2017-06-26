@@ -9,7 +9,6 @@ using StatisticSystem.DAL.Interfaces;
 using StatisticSystem.DAL.Entities;
 using Microsoft.AspNet.Identity;
 using AutoMapper;
-using System.Linq.Expressions;
 using System.Linq;
 using System.Data;
 
@@ -51,7 +50,7 @@ namespace StatisticSystem.BLL.Services
         }
 
         public async Task<ClaimsIdentity> Authenticate(ManagerDTO adminDTO)
-        {
+        {           
             ClaimsIdentity claim = null;
             Manager manager = await DataBase.Managers.FindAsync(adminDTO.UserName, adminDTO.Password);
             if (manager!=null)
@@ -136,7 +135,10 @@ namespace StatisticSystem.BLL.Services
             return details;
         }
 
-
+        public Dictionary<DateTime, int> GetDateSalesCount(string managerId)
+        {
+            return DataBase.Sales.GetDateSalesCount(managerId);
+        }
 
 
         public void Dispose()

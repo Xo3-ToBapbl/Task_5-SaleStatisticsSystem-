@@ -5,7 +5,6 @@ using StatisticSystem.DAL.EF;
 using Microsoft.AspNet.Identity.EntityFramework;
 using StatisticSystem.DAL.Entities;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 
 namespace StatisticSystem.DAL.Repositories
 {

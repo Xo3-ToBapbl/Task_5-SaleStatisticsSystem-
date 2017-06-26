@@ -6,13 +6,11 @@ using StatisticSystem.BLL.Services;
 using StatisticSystem.PL.Models;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using PagedList;
+using StatisticSystem.PL.Utill;
 
 namespace StatisticSystem.PL.Controllers
 {
@@ -24,6 +22,14 @@ namespace StatisticSystem.PL.Controllers
             {
                 return HttpContext.GetOwinContext().GetUserManager<IServiceBLL>();
             }
+        }
+
+        public JsonResult GetProducts(string managerId)
+        {
+            Dictionary<DateTime, int> data = ServiceBLL.GetDateSalesCount(managerId);
+            List<PieChartItem> result = new List<PieChartItem>();
+            data.Keys.ToList().ForEach(x => result.Add(new PieChartItem { Name = x.ToString("d"), Value = data[x] }));
+            return Json(new { Dates = result }, JsonRequestBehavior.AllowGet);
         }
 
         [Authorize(Roles = "admin")]
@@ -183,7 +189,3 @@ namespace StatisticSystem.PL.Controllers
         }
     }
 }
-
-//string id, string client, string date, string product, string cost
-//new { id = item.Id, client=item.Client, date=item.Date, product=item.Product, cost=item.Cost }
-//ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date.ToString())).

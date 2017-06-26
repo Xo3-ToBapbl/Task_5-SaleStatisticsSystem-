@@ -1,12 +1,8 @@
 ﻿using StatisticSystem.DAL.EF;
 using StatisticSystem.DAL.Entities;
-using StatisticSystem.DAL.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace StatisticSystem.DAL.Repositories
 {
@@ -74,6 +70,15 @@ namespace StatisticSystem.DAL.Repositories
                     }
             }
         }  
+
+        public Dictionary<DateTime, int> GetDateSalesCount(string ManagerId)
+        {
+            Dictionary<DateTime, int> result = (from sale in DataBase.Sales
+                       where sale.ManagerId==ManagerId
+                       group sale by sale.Date).ToDictionary(x => x.Key, x => x.Count());
+
+            return result;
+        }
 
 
         public void Dispose()

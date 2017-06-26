@@ -4,11 +4,7 @@ using Microsoft.Owin.Security.Cookies;
 using Ninject;
 using Owin;
 using StatisticSystem.BLL.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Web;
 
 [assembly: OwinStartup(typeof(StatisticSystem.PL.App_Start.StartUp))]
 

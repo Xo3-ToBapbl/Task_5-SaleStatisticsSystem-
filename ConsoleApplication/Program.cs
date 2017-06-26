@@ -23,10 +23,9 @@ namespace ConsoleApplication
         {
             string connectionString = ConfigurationManager.ConnectionStrings["ManagersDataBaseConnection"].ConnectionString;
 
-            //ServiceBLL context = new ServiceBLL(connectionString);
-            DateTime Date = DateTime.Parse("25/06/2017 0:00:00");
+            UnitOfWork context = new UnitOfWork(connectionString);
+            var manager = context.Managers.FindByName("Stolen");
 
-            //var manager = context.GetManagers();
             Console.WriteLine("Press any key to close");
             Console.ReadKey();
         }

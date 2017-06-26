@@ -1,7 +1,6 @@
 ﻿using StatisticSystem.BLL.DTO;
 using StatisticSystem.BLL.Interfaces;
 using StatisticSystem.PL.Models;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -9,7 +8,6 @@ using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using System.Web.Helpers;
 
 namespace StatisticSystem.PL.Controllers
 {
@@ -31,21 +29,9 @@ namespace StatisticSystem.PL.Controllers
             }
         }
 
-        public JsonResult GetProducts()
-        {
-             var result = new List<PieChartItem>();
-        result.Add(new PieChartItem { Name = "Ukraine", Value = 8 });
-        result.Add(new PieChartItem { Name = "Russia", Value = 6 });
-        result.Add(new PieChartItem { Name = "Belarus", Value = 6 });
-        result.Add(new PieChartItem { Name = "USA", Value = 4 });
-    
-        return Json(new { Countries = result }, JsonRequestBehavior.AllowGet);
-        }
-
-        [HttpGet]
         public ActionResult Index()
         {
-            ViewBag.Message = "Please, Log in:";
+            ViewBag.Message = "Please, Log in:";            
             return View();
         }
 
@@ -70,7 +56,7 @@ namespace StatisticSystem.PL.Controllers
                         return RedirectToAction("AdminPage", "Admin");
                     else if (userRole == "user")
                     {
-                        return RedirectToAction("ManagerPage");
+                        return RedirectToAction("ManagerPage", "User");
                     }
                 }
             }
