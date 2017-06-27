@@ -1,0 +1,28 @@
+﻿@model Dictionary<StatisticSystem.PL.Models.SaleModel, string>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="filtredSalesResult">
+    <h5>@ViewBag.Message</h5>
+    <table>
+        <tr>
+            <th>@Html.DisplayName("Manager second name")</th>
+            <th>@Html.DisplayName("Client")</th>
+            <th>@Html.DisplayName("Date")</th>
+            <th>@Html.DisplayName("Product")</th>
+            <th>@Html.DisplayName("Cost")</th>
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Value</td>
+                <td>@item.Key.Client</td>
+                <td>@item.Key.Date</td>
+                <td>@item.Key.Product</td>
+                <td>@item.Key.Cost</td>
+            </tr>
+        }
+    </table>
+</div>

@@ -80,6 +80,49 @@ namespace StatisticSystem.DAL.Repositories
             return result;
         }
 
+        public Dictionary<Sale, string> GetFiltredSales(string filter, string filterValue=null)
+        {
+            switch(filter)
+            {
+                case ("Date"):
+                    {
+                        DateTime date;
+                        if (DateTime.TryParse(filterValue, out date))
+                        {
+                            return (from sale in DataBase.Sales
+                                          where sale.Date == date
+                                          join manager in DataBase.Users on sale.ManagerId equals manager.Id
+                                          select new { Sale = sale, ManagerSecondName = manager.UserName }).
+                                     ToDictionary(x => x.Sale, x => x.ManagerSecondName);
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                        
+                    }
+                case ("Client"):
+                    {
+                        return (from sale in DataBase.Sales
+                                where sale.Client == filterValue
+                                join manager in DataBase.Users on sale.ManagerId equals manager.Id
+                                select new { Sale = sale, ManagerSecondName = manager.UserName }).
+                                     ToDictionary(x => x.Sale, x => x.ManagerSecondName);
+                    }
+                case ("Product"):
+                    {
+                        return (from sale in DataBase.Sales
+                                where sale.Product == filterValue
+                                join manager in DataBase.Users on sale.ManagerId equals manager.Id
+                                select new { Sale = sale, ManagerSecondName = manager.UserName }).
+                                     ToDictionary(x => x.Sale, x => x.ManagerSecondName);
+                    }
+                default:
+                    return null;
+            }
+            
+        }
+
 
         public void Dispose()
         {

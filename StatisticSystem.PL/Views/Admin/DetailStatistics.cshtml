@@ -1,0 +1,25 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>DetailStatistics</title>
+</head>
+<body>
+    <h3>Select a filter to display detailed statistics</h3>
+    <div>
+        @using (Ajax.BeginForm("FiltredStatistic", new AjaxOptions { UpdateTargetId = "filtredSalesResult" }))
+        {
+            @Html.DropDownList("filter", new SelectList(StatisticSystem.PL.Utill.DropDownLists.Filtres))
+            @Html.Editor("filterValue")
+            <input type="submit" value="Filter" />
+        }
+    </div>
+<div id="filtredSalesResult" ></div>
+</body>
+</html>

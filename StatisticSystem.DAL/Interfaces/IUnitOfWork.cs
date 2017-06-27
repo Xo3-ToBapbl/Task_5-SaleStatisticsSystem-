@@ -13,6 +13,8 @@ namespace StatisticSystem.DAL.Interfaces
         SalesRepository Sales { get; }
 
         IEnumerable<Sale> GetSalesByManager(string Id, string filter, string filterValue);
+        Dictionary<Sale, string> GetFiltredSale(string filter, string filterValue);
+
         Task SaveAsync();
         void SaveChanges();
     }

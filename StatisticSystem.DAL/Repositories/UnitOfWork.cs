@@ -65,6 +65,12 @@ namespace StatisticSystem.DAL.Repositories
             return Sales.GetSalesByManager(Id, filter, filterValue);
         }               
 
+        public Dictionary<Sale, string> GetFiltredSale(string filter, string filterValue)
+        {
+            return Sales.GetFiltredSales(filter, filterValue);
+        }
+
+
         public async Task SaveAsync()
         {
             await _dataBase.SaveChangesAsync();

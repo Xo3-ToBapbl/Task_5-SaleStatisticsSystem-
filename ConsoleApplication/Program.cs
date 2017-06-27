@@ -23,8 +23,8 @@ namespace ConsoleApplication
         {
             string connectionString = ConfigurationManager.ConnectionStrings["ManagersDataBaseConnection"].ConnectionString;
 
-            UnitOfWork context = new UnitOfWork(connectionString);
-            var manager = context.Managers.FindByName("Stolen");
+            ServiceBLL context = new ServiceBLL(connectionString);
+            var res = context.GetFiltredSales("client", "Piter Parker");
 
             Console.WriteLine("Press any key to close");
             Console.ReadKey();

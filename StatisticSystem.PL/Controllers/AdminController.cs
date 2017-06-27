@@ -46,10 +46,42 @@ namespace StatisticSystem.PL.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "admin")]
         public ActionResult AddNewManager()
         {
             ViewBag.Message = "Please fill all fields to add manager";
             return View();
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "admin")]
+        public ActionResult DetailStatistics()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "admin")]
+        public ActionResult FiltredStatistic(string filter, string filterValue)
+        {
+            Dictionary<SaleModel, string> filtredSalesModel = new Dictionary<SaleModel, string>();
+            if (filter=="Date")
+            {
+                DateTime date;
+                if (DateTime.TryParse(filterValue, out date))
+                {
+                    filtredSalesModel = GetFiltredSales(filter, filterValue);
+                }
+                else
+                {
+                    ViewBag.Message = "Please, enter valid date";
+                }                  
+            }
+            else
+            {
+                filtredSalesModel = GetFiltredSales(filter, filterValue);
+            }           
+            return PartialView(filtredSalesModel);
         }
 
         [HttpPost]
@@ -186,6 +218,18 @@ namespace StatisticSystem.PL.Controllers
             });
             IEnumerable<SaleModel> sales = Mapper.Map<IEnumerable<SaleDTO>, IEnumerable<SaleModel>>(salesDTO);
             return new SaleCollectionModel { Sales = sales };
+        }
+
+        private Dictionary<SaleModel, string> GetFiltredSales(string filter, string filterValue)
+        {
+            Dictionary<SaleDTO, string> filtredSalesDTO = ServiceBLL.GetFiltredSales(filter, filterValue);
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<SaleDTO, SaleModel>().
+                ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date.ToString("d"))).
+                ForMember(dest => dest.Cost, opt => opt.MapFrom(src => src.Cost.ToString()));
+            });
+            return Mapper.Map<Dictionary<SaleDTO, string>, Dictionary<SaleModel, string>>(filtredSalesDTO);
         }
     }
 }

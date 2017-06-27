@@ -140,6 +140,24 @@ namespace StatisticSystem.BLL.Services
             return DataBase.Sales.GetDateSalesCount(managerId);
         }
 
+        public Dictionary<SaleDTO, string> GetFiltredSales(string filter, string filterValue)
+        {
+            Dictionary<Sale, string> filtredSalesDAL = DataBase.Sales.GetFiltredSales(filter, filterValue);
+            if (filtredSalesDAL.Count!=0 || filtredSalesDAL!=null)
+            {
+                Mapper.Initialize(cfg =>
+                {
+                    cfg.CreateMap<Sale, SaleDTO>();
+                });
+                return Mapper.Map<Dictionary<Sale, string>, Dictionary<SaleDTO, string>>(filtredSalesDAL);
+            }
+            else
+            {
+                return null;
+            }
+
+        }
+
 
         public void Dispose()
         {

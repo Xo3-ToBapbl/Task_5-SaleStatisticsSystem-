@@ -16,7 +16,10 @@
     <div> 
         <h3>Hello administrator @ViewBag.Name !</h3> 
     </div>
-    <div>@Html.ActionLink("Add new manager", "AddNewManager")</div>
+    <div>
+        @Html.ActionLink("Add new manager", "AddNewManager") 
+        @Html.ActionLink("Detail statistics", "DetailStatistics")
+    </div>
     <table>
         <tr>
             <th>@Html.DisplayName("Manager second Name")</th>
