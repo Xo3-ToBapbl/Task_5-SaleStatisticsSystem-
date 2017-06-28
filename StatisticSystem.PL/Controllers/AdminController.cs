@@ -55,8 +55,13 @@ namespace StatisticSystem.PL.Controllers
 
         [HttpGet]
         [Authorize(Roles = "admin")]
-        public ActionResult DetailStatistics()
+        public ActionResult DetailStatistics(string message="")
         {
+            ViewBag.Message = "Select a filter to display detailed statistics";
+            if (message != null && message != "")
+            {
+                ViewBag.Message = message;
+            }      
             return View();
         }
 
@@ -64,24 +69,29 @@ namespace StatisticSystem.PL.Controllers
         [Authorize(Roles = "admin")]
         public ActionResult FiltredStatistic(string filter, string filterValue)
         {
-            Dictionary<SaleModel, string> filtredSalesModel = new Dictionary<SaleModel, string>();
-            if (filter=="Date")
+            switch (filter)
             {
-                DateTime date;
-                if (DateTime.TryParse(filterValue, out date))
-                {
-                    filtredSalesModel = GetFiltredSales(filter, filterValue);
-                }
-                else
-                {
-                    ViewBag.Message = "Please, enter valid date";
-                }                  
+                case ("None"):
+                    {
+                        return RedirectToAction("DetailStatistics");
+                    }
+                case ("Date"):
+                    {
+                        DateTime date;
+                        if (DateTime.TryParse(filterValue, out date))
+                        {
+                            return PartialView(GetFiltredSales(filter, filterValue));
+                        }
+                        else
+                        {
+                            return RedirectToAction("DetailStatistics", new { message = "Please, enter valid date." });
+                        }
+                    }
+                default:
+                    {
+                        return PartialView(GetFiltredSales(filter, filterValue));
+                    }
             }
-            else
-            {
-                filtredSalesModel = GetFiltredSales(filter, filterValue);
-            }           
-            return PartialView(filtredSalesModel);
         }
 
         [HttpPost]
@@ -222,13 +232,14 @@ namespace StatisticSystem.PL.Controllers
 
         private Dictionary<SaleModel, string> GetFiltredSales(string filter, string filterValue)
         {
+            Dictionary<SaleModel, string> filtredSalesModel = new Dictionary<SaleModel, string>();
             Dictionary<SaleDTO, string> filtredSalesDTO = ServiceBLL.GetFiltredSales(filter, filterValue);
             Mapper.Initialize(cfg =>
-            {
-                cfg.CreateMap<SaleDTO, SaleModel>().
-                ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date.ToString("d"))).
-                ForMember(dest => dest.Cost, opt => opt.MapFrom(src => src.Cost.ToString()));
-            });
+                    {
+                        cfg.CreateMap<SaleDTO, SaleModel>().
+                        ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date.ToString("d"))).
+                        ForMember(dest => dest.Cost, opt => opt.MapFrom(src => src.Cost.ToString()));
+                    });   
             return Mapper.Map<Dictionary<SaleDTO, string>, Dictionary<SaleModel, string>>(filtredSalesDTO);
         }
     }

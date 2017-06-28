@@ -143,17 +143,19 @@ namespace StatisticSystem.BLL.Services
         public Dictionary<SaleDTO, string> GetFiltredSales(string filter, string filterValue)
         {
             Dictionary<Sale, string> filtredSalesDAL = DataBase.Sales.GetFiltredSales(filter, filterValue);
-            if (filtredSalesDAL.Count!=0 || filtredSalesDAL!=null)
+            Dictionary<SaleDTO, string> filtredSalesDTO = new Dictionary<SaleDTO, string>();
+            if (filtredSalesDAL!=null)
             {
                 Mapper.Initialize(cfg =>
                 {
                     cfg.CreateMap<Sale, SaleDTO>();
                 });
-                return Mapper.Map<Dictionary<Sale, string>, Dictionary<SaleDTO, string>>(filtredSalesDAL);
+                filtredSalesDTO = Mapper.Map<Dictionary<Sale, string>, Dictionary<SaleDTO, string>>(filtredSalesDAL);
+                return filtredSalesDTO;
             }
             else
             {
-                return null;
+                return filtredSalesDTO;
             }
 
         }
