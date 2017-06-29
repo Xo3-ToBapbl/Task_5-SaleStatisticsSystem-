@@ -5,6 +5,8 @@ using StatisticSystem.DAL.EF;
 using Microsoft.AspNet.Identity.EntityFramework;
 using StatisticSystem.DAL.Entities;
 using System.Collections.Generic;
+using Microsoft.AspNet.Identity;
+using System.Linq;
 
 namespace StatisticSystem.DAL.Repositories
 {
@@ -68,6 +70,19 @@ namespace StatisticSystem.DAL.Repositories
         public Dictionary<Sale, string> GetFiltredSale(string filter, string filterValue)
         {
             return Sales.GetFiltredSales(filter, filterValue);
+        }
+
+        public KeyValuePair<string, List<string>> GetManagerNameRole(string Id)
+        {
+            Manager manager = Managers.FindById(Id);
+            if (manager != null)
+            {
+                List<string> roleNames = new List<string>();
+                manager.Roles.ToList().ForEach(x => roleNames.Add(Roles.FindById(x.RoleId).Name));
+                return new KeyValuePair<string, List<string>>(manager.UserName, roleNames);
+            }
+            else
+                return default(KeyValuePair<string, List<string>>);           
         }
 
 

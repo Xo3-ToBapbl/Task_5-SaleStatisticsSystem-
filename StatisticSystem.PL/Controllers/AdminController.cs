@@ -24,13 +24,7 @@ namespace StatisticSystem.PL.Controllers
             }
         }
 
-        public JsonResult GetProducts(string managerId)
-        {
-            Dictionary<DateTime, int> data = ServiceBLL.GetDateSalesCount(managerId);
-            List<PieChartItem> result = new List<PieChartItem>();
-            data.Keys.ToList().ForEach(x => result.Add(new PieChartItem { Name = x.ToString("d"), Value = data[x] }));
-            return Json(new { Dates = result }, JsonRequestBehavior.AllowGet);
-        }
+        #region AdminPage
 
         [Authorize(Roles = "admin")]
         public ActionResult AdminPage()
@@ -45,23 +39,15 @@ namespace StatisticSystem.PL.Controllers
             return View(managersModel);
         }
 
-        [HttpGet]
-        [Authorize(Roles = "admin")]
-        public ActionResult AddNewManager()
-        {
-            ViewBag.Message = "Please fill all fields to add manager";
-            return View();
-        }
+        #endregion
+
+        #region DetailStatistic
 
         [HttpGet]
         [Authorize(Roles = "admin")]
-        public ActionResult DetailStatistics(string message="")
+        public ActionResult DetailStatistics()
         {
-            ViewBag.Message = "Select a filter to display detailed statistics";
-            if (message != null && message != "")
-            {
-                ViewBag.Message = message;
-            }      
+            ViewBag.Message = "Select a filter to display detailed statistics"; 
             return View();
         }
 
@@ -69,29 +55,73 @@ namespace StatisticSystem.PL.Controllers
         [Authorize(Roles = "admin")]
         public ActionResult FiltredStatistic(string filter, string filterValue)
         {
-            switch (filter)
+            if (filterValue=="")
             {
-                case ("None"):
+                ViewBag.Message = "Please, enter data.";
+                return PartialView();
+            }
+            else
+            {
+                if (filter=="Date")
+                {
+                    DateTime date;
+                    if (DateTime.TryParse(filterValue, out date))
                     {
-                        return RedirectToAction("DetailStatistics");
-                    }
-                case ("Date"):
-                    {
-                        DateTime date;
-                        if (DateTime.TryParse(filterValue, out date))
+                        Dictionary<SaleModel, string> filtredSalesModel = GetFiltredSales(filter, filterValue);
+                        if (filtredSalesModel.Count!=0)
                         {
-                            return PartialView(GetFiltredSales(filter, filterValue));
+                            return PartialView(filtredSalesModel);
                         }
                         else
                         {
-                            return RedirectToAction("DetailStatistics", new { message = "Please, enter valid date." });
-                        }
+                            ViewBag.Message = "There is no data for your request.";
+                            return PartialView();
+                        }                       
                     }
-                default:
+                    else
                     {
-                        return PartialView(GetFiltredSales(filter, filterValue));
+                        ViewBag.Message = "Please, enter valid date.";
+                        return PartialView();
                     }
+                }
+                else
+                {
+                    Dictionary<SaleModel, string> filtredSalesModel = GetFiltredSales(filter, filterValue);
+                    if (filtredSalesModel.Count != 0)
+                    {
+                        return PartialView(filtredSalesModel);
+                    }
+                    else
+                    {
+                        ViewBag.Message = "There is no data for your request.";
+                        return PartialView();
+                    }
+                }
             }
+        }
+
+        #endregion
+
+        [HttpGet]
+        [Authorize(Roles = "admin")]
+        public ActionResult DeleteUser(string Id, string UserName)
+        {
+            KeyValuePair<string, List<string>> userNameRoles = ServiceBLL.GetManager(Id);
+            if (!userNameRoles.Equals(default(KeyValuePair<string, List<string>>)))
+            {
+                return PartialView("DeleteUser");
+            }
+            return PartialView();
+        }
+
+        #region AddNewUser
+
+        [HttpGet]
+        [Authorize(Roles = "admin")]
+        public ActionResult AddNewManager()
+        {
+            ViewBag.Message = "Please fill all fields to add manager";
+            return View();
         }
 
         [HttpPost]
@@ -124,7 +154,11 @@ namespace StatisticSystem.PL.Controllers
                 ViewBag.Message = "Unable to add manager. Inner error.";
             }
             return View(model);
-        } 
+        }
+
+        #endregion
+
+        #region Sales
 
         [HttpGet]
         [Authorize(Roles = "admin")]
@@ -216,6 +250,16 @@ namespace StatisticSystem.PL.Controllers
             return View(saleModel);
         }
 
+        #endregion
+
+
+        public JsonResult GetProducts(string managerId)
+        {
+            Dictionary<DateTime, int> data = ServiceBLL.GetDateSalesCount(managerId);
+            List<PieChartItem> result = new List<PieChartItem>();
+            data.Keys.ToList().ForEach(x => result.Add(new PieChartItem { Name = x.ToString("d"), Value = data[x] }));
+            return Json(new { Dates = result }, JsonRequestBehavior.AllowGet);
+        }
 
         private SaleCollectionModel GetSaleCollectionModel(string id, string filter="None", string filterValue="None")
         {
@@ -232,7 +276,6 @@ namespace StatisticSystem.PL.Controllers
 
         private Dictionary<SaleModel, string> GetFiltredSales(string filter, string filterValue)
         {
-            Dictionary<SaleModel, string> filtredSalesModel = new Dictionary<SaleModel, string>();
             Dictionary<SaleDTO, string> filtredSalesDTO = ServiceBLL.GetFiltredSales(filter, filterValue);
             Mapper.Initialize(cfg =>
                     {

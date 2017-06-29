@@ -18,5 +18,6 @@ namespace StatisticSystem.BLL.Interfaces
         OperationDetails DeleteSale(string id);
         Dictionary<DateTime, int> GetDateSalesCount(string managerId);
         Dictionary<SaleDTO, string> GetFiltredSales(string filter, string filterValue);
+        KeyValuePair<string, List<string>> GetManager(string Id);
     }
 }

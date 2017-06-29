@@ -14,6 +14,7 @@ namespace StatisticSystem.DAL.Interfaces
 
         IEnumerable<Sale> GetSalesByManager(string Id, string filter, string filterValue);
         Dictionary<Sale, string> GetFiltredSale(string filter, string filterValue);
+        KeyValuePair<string, List<string>> GetManagerNameRole(string Id);
 
         Task SaveAsync();
         void SaveChanges();

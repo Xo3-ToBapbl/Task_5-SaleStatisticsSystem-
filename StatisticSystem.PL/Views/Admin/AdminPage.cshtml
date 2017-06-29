@@ -31,7 +31,7 @@
                 <td>@item.SecondName</td>
                 <td>
                     @Html.ActionLink("Sales", "Sales", new { ManagerId = item.Id })
-                    @Html.ActionLink("Delete", "DeleteManager", new { ManagerId = item.Id })
+                    @Html.ActionLink("Delete", "DeleteUser", new { Id = item.Id, UserName = item.SecondName })
                 </td>             
             </tr>
         }

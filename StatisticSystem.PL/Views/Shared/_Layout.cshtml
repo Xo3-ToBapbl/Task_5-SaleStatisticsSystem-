@@ -7,10 +7,11 @@
     <div>
         @Html.ActionLink("LogOut", "LogOut", "Home")
     </div>
+    @RenderBody()
+    
     @Styles.Render("~/Content/Site.css")
     @Scripts.Render("~/Scripts/jquery-3.1.1.js")
     @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.js")
-    @RenderBody()   
 </body>
 
 </html>

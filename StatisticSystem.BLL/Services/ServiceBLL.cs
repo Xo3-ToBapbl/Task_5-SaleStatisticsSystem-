@@ -160,6 +160,11 @@ namespace StatisticSystem.BLL.Services
 
         }
 
+        public KeyValuePair<string, List<string>> GetManager(string Id)
+        {
+            return DataBase.GetManagerNameRole(Id);
+        }
+
 
         public void Dispose()
         {

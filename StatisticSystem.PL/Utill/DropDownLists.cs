@@ -11,7 +11,7 @@ namespace StatisticSystem.PL.Utill
         {
             get
             {
-                return new List<string> { "None", "Date", "Client", "Product" };
+                return new List<string> { "Date", "Client", "Product" };
             }
         }
     }
