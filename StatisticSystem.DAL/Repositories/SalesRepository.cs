@@ -35,6 +35,12 @@ namespace StatisticSystem.DAL.Repositories
             DataBase.SaveChanges();
         }
 
+        public void DeleteAllByManagerId(string managerId)
+        {
+            var salesId = DataBase.Sales.Where(sale => sale.ManagerId == managerId).ToList();
+            salesId.ForEach(sale => DataBase.Entry(sale).State = System.Data.Entity.EntityState.Deleted);
+        }
+
         public Sale Find(Func<Sale, bool> predicate)
         {
             return DataBase.Sales.FirstOrDefault(predicate);

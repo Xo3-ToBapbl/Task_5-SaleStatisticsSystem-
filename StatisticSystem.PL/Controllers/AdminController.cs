@@ -27,8 +27,9 @@ namespace StatisticSystem.PL.Controllers
         #region AdminPage
 
         [Authorize(Roles = "admin")]
-        public ActionResult AdminPage()
+        public ActionResult AdminPage(string message="")
         {
+            ViewBag.Message = message;
             ViewBag.Name = User.Identity.Name;
             IEnumerable<ManagerDTO> managersDTO = ServiceBLL.GetManagers();
             Mapper.Initialize(cfg =>
@@ -104,14 +105,40 @@ namespace StatisticSystem.PL.Controllers
 
         [HttpGet]
         [Authorize(Roles = "admin")]
-        public ActionResult DeleteUser(string Id, string UserName)
+        public ActionResult DeleteManager(string Id, string UserName)
         {
-            KeyValuePair<string, List<string>> userNameRoles = ServiceBLL.GetManager(Id);
-            if (!userNameRoles.Equals(default(KeyValuePair<string, List<string>>)))
+            ManagerDTO managerDTO = ServiceBLL.GetManagerById(Id);
+            if (managerDTO!=null)
             {
-                return PartialView("DeleteUser");
+                Mapper.Initialize(cfg =>
+                {
+                    cfg.CreateMap<ManagerDTO, ManagerModel>().ForMember(dest=>dest.SecondName, opt=>opt.MapFrom(src=>src.UserName));
+                });
+                ManagerModel managerModel = Mapper.Map<ManagerDTO, ManagerModel>(managerDTO);
+                if (managerModel.Role == null || managerModel.Role == "admin")
+                {
+                    ViewBag.Message = "You can not delete an administrator or a user with an undefined role. Please, call servicemanager.";
+                    return PartialView();
+                }
+                else
+                {
+                    return PartialView(managerModel);
+                }
             }
-            return PartialView();
+            else
+            {
+                ViewBag.Message = "There is manager to delete.";
+                return PartialView();
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
+        public ActionResult DeleteManager(string Id)
+        {
+            OperationDetails details = ServiceBLL.DeleteManager(Id);
+            return RedirectToAction("AdminPage", new { message = details.Message });
         }
 
         #region AddNewUser

@@ -1,0 +1,17 @@
+﻿@model StatisticSystem.PL.Models.ManagerModel
+
+@if (ViewBag.Message != null)
+{
+    <h3>@ViewBag.Message</h3>
+}
+else
+{
+    <h3>Are you shure? Delete @Model.SecondName ?</h3>
+    <div>
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <input type="submit" value="Delete" />
+        }
+    </div>
+}

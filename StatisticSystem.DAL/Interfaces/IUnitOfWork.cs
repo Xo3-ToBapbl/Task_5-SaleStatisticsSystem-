@@ -12,10 +12,8 @@ namespace StatisticSystem.DAL.Interfaces
         RoleRepository Roles { get; }
         SalesRepository Sales { get; }
 
-        IEnumerable<Sale> GetSalesByManager(string Id, string filter, string filterValue);
-        Dictionary<Sale, string> GetFiltredSale(string filter, string filterValue);
-        KeyValuePair<string, List<string>> GetManagerNameRole(string Id);
-
+        bool DeleteManager(string Id);
+        
         Task SaveAsync();
         void SaveChanges();
     }

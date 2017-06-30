@@ -60,19 +60,22 @@ namespace StatisticSystem.BLL.Services
             return claim;
         }
 
-        public async Task<ManagerDTO> GetManagerById(string id)
+        public ManagerDTO GetManagerById(string id)
         {
-            Manager managerDAL = await DataBase.Managers.FindByIdAsync(id);
-            var role = await DataBase.Managers.GetRolesAsync(id);
-            if (managerDAL!=null)
+            Manager managerDAL = DataBase.Managers.FindById(id);
+            if (managerDAL != null)
             {
                 Mapper.Initialize(cfg =>
                 {
-                    cfg.CreateMap<Manager, ManagerDTO>();
+                    cfg.CreateMap<Manager, ManagerDTO>().ForMember(dest => dest.Sales, opt => opt.Ignore());
                 });
-
                 ManagerDTO managerDTO = Mapper.Map<Manager, ManagerDTO>(managerDAL);
-                managerDTO.Role = role.FirstOrDefault();
+                var role = managerDAL.Roles.FirstOrDefault();
+                if (role != null)
+                {
+                    string roleName = DataBase.Roles.FindById(role.RoleId).Name;
+                    managerDTO.Role = roleName;
+                }
                 return managerDTO;
             }
             return null;
@@ -90,7 +93,7 @@ namespace StatisticSystem.BLL.Services
 
         public IEnumerable<SaleDTO> GetSalesByManager(string id, string filter, string filterValue)
         {
-            IEnumerable<Sale> salesDAL = DataBase.GetSalesByManager(id, filter, filterValue);
+            IEnumerable<Sale> salesDAL = DataBase.Sales.GetSalesByManager(id, filter, filterValue);
             Mapper.Initialize(cfg =>
             {
                 cfg.CreateMap<Sale, SaleDTO>();
@@ -160,9 +163,17 @@ namespace StatisticSystem.BLL.Services
 
         }
 
-        public KeyValuePair<string, List<string>> GetManager(string Id)
+        public OperationDetails DeleteManager(string Id)
         {
-            return DataBase.GetManagerNameRole(Id);
+            bool result = DataBase.DeleteManager(Id);
+            if(result)
+            {
+                return new OperationDetails(true, "Manager successfully deleted.", null);
+            }
+            else
+            {
+                return new OperationDetails(false, "Database error.Please, try later.", null);
+            }
         }
 
 

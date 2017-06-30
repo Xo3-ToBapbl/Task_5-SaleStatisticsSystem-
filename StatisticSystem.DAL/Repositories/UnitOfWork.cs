@@ -7,6 +7,7 @@ using StatisticSystem.DAL.Entities;
 using System.Collections.Generic;
 using Microsoft.AspNet.Identity;
 using System.Linq;
+using System.Data;
 
 namespace StatisticSystem.DAL.Repositories
 {
@@ -62,30 +63,30 @@ namespace StatisticSystem.DAL.Repositories
         }
 
 
-        public IEnumerable<Sale> GetSalesByManager(string Id, string filter, string filterValue)
-        {
-            return Sales.GetSalesByManager(Id, filter, filterValue);
-        }               
-
-        public Dictionary<Sale, string> GetFiltredSale(string filter, string filterValue)
-        {
-            return Sales.GetFiltredSales(filter, filterValue);
-        }
-
-        public KeyValuePair<string, List<string>> GetManagerNameRole(string Id)
+        public bool DeleteManager(string Id)
         {
             Manager manager = Managers.FindById(Id);
-            if (manager != null)
+            if(manager!=null)
             {
-                List<string> roleNames = new List<string>();
-                manager.Roles.ToList().ForEach(x => roleNames.Add(Roles.FindById(x.RoleId).Name));
-                return new KeyValuePair<string, List<string>>(manager.UserName, roleNames);
+                try
+                {
+                    Sales.DeleteAllByManagerId(Id);
+                    Managers.Delete(manager);
+                    SaveChanges();
+                    return true;
+                }
+                catch (DataException)
+                {
+                    return false;
+                }
             }
             else
-                return default(KeyValuePair<string, List<string>>);           
+            {
+                return false;
+            }
         }
 
-
+            
         public async Task SaveAsync()
         {
             await _dataBase.SaveChangesAsync();
