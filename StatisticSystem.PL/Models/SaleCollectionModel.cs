@@ -26,14 +26,6 @@ namespace StatisticSystem.PL.Models
         }
         public string Filter { get; set; }
         public string FilterValue { get; set; }
-        public string ManagerId { get; set; }
-
-        public static IEnumerable<string> Filtres
-        {
-            get
-            {
-                return new List<string> { "None", "Date", "Client", "Product" };
-            }
-        }
+        public string ManagerId { get; set; }        
     }
 }

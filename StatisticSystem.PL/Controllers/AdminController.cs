@@ -103,6 +103,8 @@ namespace StatisticSystem.PL.Controllers
 
         #endregion
 
+        #region DeleteManager
+
         [HttpGet]
         [Authorize(Roles = "admin")]
         public ActionResult DeleteManager(string Id, string UserName)
@@ -117,7 +119,7 @@ namespace StatisticSystem.PL.Controllers
                 ManagerModel managerModel = Mapper.Map<ManagerDTO, ManagerModel>(managerDTO);
                 if (managerModel.Role == null || managerModel.Role == "admin")
                 {
-                    ViewBag.Message = "You can not delete an administrator or a user with an undefined role. Please, call servicemanager.";
+                    ViewBag.Message = "You can not delete yourself, administrators or a users with an undefined role. Please, call servicemanager.";
                     return PartialView();
                 }
                 else
@@ -127,7 +129,7 @@ namespace StatisticSystem.PL.Controllers
             }
             else
             {
-                ViewBag.Message = "There is manager to delete.";
+                ViewBag.Message = "There is no manager to delete.";
                 return PartialView();
             }
         }
@@ -136,10 +138,12 @@ namespace StatisticSystem.PL.Controllers
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "admin")]
         public ActionResult DeleteManager(string Id)
-        {
+        {            
             OperationDetails details = ServiceBLL.DeleteManager(Id);
             return RedirectToAction("AdminPage", new { message = details.Message });
         }
+
+        #endregion
 
         #region AddNewUser
 
@@ -189,34 +193,53 @@ namespace StatisticSystem.PL.Controllers
 
         [HttpGet]
         [Authorize(Roles = "admin")]
-        public ActionResult Sales(string ManagerId)
+        public ActionResult Sales(string managerId, string message="")
         {
-            SaleCollectionModel model = GetSaleCollectionModel(ManagerId);
-
-            return View(model);
+            ViewBag.Message = message;
+            ViewBag.ManagerId = managerId;
+            return View();
         }
 
         [HttpPost]
         [Authorize(Roles = "admin")]
-        public ActionResult Sales(SaleCollectionModel model)
-        {
-            if(model.Filter=="Date")
+        public ActionResult FiltredSales(string managerId, string filter, string filterValue)
+        {;
+            if (filter=="Date")
             {
                 DateTime outDate;
-                if (DateTime.TryParse(model.FilterValue, out outDate))
+                if (DateTime.TryParse(filterValue, out outDate))
                 {
-                    model = GetSaleCollectionModel(model.ManagerId, model.Filter, model.FilterValue);
+                    SaleCollectionModel model = GetSaleCollectionModel(managerId, filter, filterValue);
+                    if (model.Sales.Count()!=0)
+                    {
+                        return PartialView(model);
+                    }
+                    else
+                    {
+                        ViewBag.Message = "There is no data for your request.";
+                        return PartialView();
+                    }
+                    
                 }
                 else
                 {
-                    ViewBag.Message = "Please, enter correct date.";
+                    ViewBag.Message = "Please, enter valid date.";
+                    return PartialView();
                 }
             }
             else
             {
-                model = GetSaleCollectionModel(model.ManagerId, model.Filter, model.FilterValue);
-            }
-            return View(model);
+                SaleCollectionModel model = GetSaleCollectionModel(managerId, filter, filterValue);
+                if (model.Sales.Count() != 0)
+                {
+                    return PartialView(model);
+                }
+                else
+                {
+                    ViewBag.Message = "There is no data for your request.";
+                    return PartialView();
+                }
+            }           
         }
 
         [HttpGet]
@@ -261,20 +284,17 @@ namespace StatisticSystem.PL.Controllers
 
         [HttpGet]
         [Authorize(Roles = "admin")]
-        public ActionResult DeleteSale(string id, string client, string date, string product, string cost, string managerId)
-        {
-            ViewBag.Message = "Are Your sure? Delete this sale?";
-            SaleModel saleModel = new SaleModel { Id = id, Client = client, Date = date, Product = product, Cost = cost, ManagerId = managerId };
-            return View(saleModel);
+        public ActionResult DeleteSale(string id)
+        {           
+            return PartialView();
         }
 
         [HttpPost]
         [Authorize(Roles = "admin")]
-        public ActionResult DeleteSale(SaleModel saleModel)
+        public ActionResult DeleteSale(string id, string managerId)
         {
-            OperationDetails detail = ServiceBLL.DeleteSale(saleModel.Id);
-            ViewBag.Message = detail.Message;
-            return View(saleModel);
+            OperationDetails detail = ServiceBLL.DeleteSale(id);
+            return RedirectToAction("Sales", new { message= detail.Message, managerId = managerId });
         }
 
         #endregion

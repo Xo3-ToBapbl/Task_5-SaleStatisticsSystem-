@@ -1,0 +1,70 @@
+﻿@model StatisticSystem.PL.Models.SaleCollectionModel
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Sales</title>
+    @Styles.Render("~/Content/Site.css")
+
+    @Scripts.Render("~/Scripts/jquery-3.1.1.js")
+
+    @Scripts.Render("~/Content/themes/base/all.css")
+    @Scripts.Render("~/Scripts/jquery-ui-1.12.1.min.js")
+    <link href='@Url.Content("~/Content/themes/base/jquery-ui.css")' rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <div id="filtredSalesResult">
+        @if (ViewBag.Message == null)
+        {
+            <table>
+                <tr>
+                    <th>@Html.DisplayName("Client")</th>
+                    <th>@Html.DisplayName("Date")</th>
+                    <th>@Html.DisplayName("Product")</th>
+                    <th>@Html.DisplayName("Cost")</th>
+                </tr>
+                @foreach (StatisticSystem.PL.Models.SaleModel item in Model.Sales)
+                {
+                    <tr>
+                        <td>@item.Client</td>
+                        <td>@item.Date</td>
+                        <td>@item.Product</td>
+                        <td>@item.Cost</td>
+                        <td>
+                            @Html.ActionLink("Edit", "EditSale", new { id = item.Id, client = item.Client, date = item.Date, product = item.Product, cost = item.Cost, managerId = item.ManagerId }) |
+                            @Html.ActionLink("Delete", "DeleteSale", new { id = item.Id, managerId = item.ManagerId }, new { @class = "viewDialog", data_dialog_title = "Delete sale" })
+                        </td>
+                    </tr>
+                }
+            </table> 
+        }
+        else
+        {
+            <h4>@ViewBag.Message</h4>
+        }
+
+    <script>
+    $(document).ready(function () {
+
+        $.ajaxSetup({ cache: false });
+
+        $(".viewDialog").on("click", function (e) {
+            e.preventDefault();
+
+            $("<div></div>")
+                .addClass("dialog")
+                .appendTo("body")
+                .dialog({
+                    title: $(this).attr("data-dialog-title"),
+                     close: function () { $(this).remove() },
+                    modal: true
+                })
+                .load(this.href);
+        });
+    });
+    </script>
+    </div>
+</body>
+</html>

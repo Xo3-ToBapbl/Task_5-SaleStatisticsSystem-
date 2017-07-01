@@ -14,5 +14,13 @@ namespace StatisticSystem.PL.Utill
                 return new List<string> { "Date", "Client", "Product" };
             }
         }
+
+        public static IEnumerable<string> SaleFiltres
+        {
+            get
+            {
+                return new List<string> { "None", "Date", "Client", "Product" };
+            }
+        }
     }
 }
