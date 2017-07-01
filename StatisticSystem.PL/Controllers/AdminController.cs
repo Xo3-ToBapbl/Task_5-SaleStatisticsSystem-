@@ -244,10 +244,25 @@ namespace StatisticSystem.PL.Controllers
 
         [HttpGet]
         [Authorize(Roles = "admin")]
-        public ActionResult EditSale(string id, string client, string date, string product, string cost, string managerId)
+        public ActionResult EditSale(string id)
         {
-            SaleModel saleModel = new SaleModel { Id = id, Client = client, Date = date, Product = product, Cost = cost, ManagerId= managerId };
-            return View(saleModel);
+            SaleDTO saleDTO = ServiceBLL.GetSale(id);
+            if (saleDTO != null)
+            {
+                Mapper.Initialize(cfg =>
+                {
+                    cfg.CreateMap<SaleDTO, SaleModel>().
+                    ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date.ToString("d"))).
+                    ForMember(dest => dest.Cost, opt => opt.MapFrom(src => src.Cost.ToString()));
+                });
+                SaleModel model = Mapper.Map<SaleDTO, SaleModel>(saleDTO);
+                return PartialView(model);
+            }
+            else
+            {
+                ViewBag.Message = "There is no sale to edit";
+                return PartialView();
+            }
         }
 
         [HttpPost]

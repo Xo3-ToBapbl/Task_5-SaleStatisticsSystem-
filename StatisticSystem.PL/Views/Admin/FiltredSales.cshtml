@@ -1,5 +1,9 @@
 ﻿@model StatisticSystem.PL.Models.SaleCollectionModel
 
+@{
+    Layout = null;
+}
+
 <!DOCTYPE html>
 
 <html>
@@ -33,7 +37,7 @@
                         <td>@item.Product</td>
                         <td>@item.Cost</td>
                         <td>
-                            @Html.ActionLink("Edit", "EditSale", new { id = item.Id, client = item.Client, date = item.Date, product = item.Product, cost = item.Cost, managerId = item.ManagerId }) |
+                            @Html.ActionLink("Edit", "EditSale", new { id = item.Id }, new { @class = "viewDialog", data_dialog_title = "Edit sale" }) |
                             @Html.ActionLink("Delete", "DeleteSale", new { id = item.Id, managerId = item.ManagerId }, new { @class = "viewDialog", data_dialog_title = "Delete sale" })
                         </td>
                     </tr>
@@ -58,7 +62,7 @@
                 .appendTo("body")
                 .dialog({
                     title: $(this).attr("data-dialog-title"),
-                     close: function () { $(this).remove() },
+                    close: function () { $(this).remove() },
                     modal: true
                 })
                 .load(this.href);

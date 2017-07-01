@@ -103,6 +103,23 @@ namespace StatisticSystem.BLL.Services
 
         }
 
+        public SaleDTO GetSale(string id)
+        {
+            Sale saleDAL = DataBase.Sales.GetSale(id);
+            if(saleDAL!=null)
+            {
+                Mapper.Initialize(cfg =>
+                {
+                    cfg.CreateMap<Sale, SaleDTO>();
+                });
+                return Mapper.Map<Sale, SaleDTO>(saleDAL);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         public OperationDetails UpdateSale(SaleDTO saleDTO)
         {
             Mapper.Initialize(cfg =>

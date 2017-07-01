@@ -22,6 +22,11 @@ namespace StatisticSystem.DAL.Repositories
             DataBase.Sales.Add(item);
         }
 
+        public Sale GetSale(string id)
+        {
+            return DataBase.Sales.FirstOrDefault(sale => sale.Id == id);
+        }
+
         public void Update(Sale item)
         {
             DataBase.Entry(item).State = System.Data.Entity.EntityState.Modified;
