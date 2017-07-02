@@ -1,49 +1,75 @@
 ﻿@model StatisticSystem.PL.Models.SaleModel
 
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-    
-    <div>
-        @Html.ValidationSummary(true)
-        @Html.HiddenFor(model => model.Id)
-        @Html.HiddenFor(model => model.ManagerId)
-        <div>
-            @Html.LabelFor(model => model.Date)
-            <div>
-                @Html.EditorFor(model => model.Date)
-                @Html.ValidationMessageFor(model => model.Date)
-            </div>
-        </div>
-
-        <div>
-            @Html.LabelFor(model => model.Client)
-            <div>
-                @Html.EditorFor(model => model.Client)
-                @Html.ValidationMessageFor(model => model.Client)
-            </div>
-        </div>
-
-        <div>
-            @Html.LabelFor(model => model.Product)
-            <div>
-                @Html.EditorFor(model => model.Product)
-                @Html.ValidationMessageFor(model => model.Product)
-            </div>
-        </div>
-
-        <div>
-            @Html.LabelFor(model => model.Cost)
-            <div>
-                @Html.EditorFor(model => model.Cost)
-                @Html.ValidationMessageFor(model => model.Cost)
-            </div>
-        </div>
-        <br />
-        <div>
-            <div>
-                <input type="submit" value="Save" />
-            </div>
-        </div>
-    </div>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Edit sale</title>
+</head>
+<body>
+    @Html.ActionLink("Back", "Sales", new { managerId = Model.ManagerId})
+    
+    
+@if (ViewBag.ErrorMessage == null)
+{
+    using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div>
+            <h4>Edit sale</h4>
+            <h4>@ViewBag.Message</h4>
+            @Html.ValidationSummary(true)
+            @Html.HiddenFor(model => model.Id)
+
+            <div>
+                @Html.LabelFor(model => model.Date)
+                <div>
+                    @Html.EditorFor(model => model.Date)
+                    @Html.ValidationMessageFor(model => model.Date)
+                </div>
+            </div>
+
+            <div>
+                @Html.LabelFor(model => model.Client)
+                <div>
+                    @Html.EditorFor(model => model.Client)
+                    @Html.ValidationMessageFor(model => model.Client)
+                </div>
+            </div>
+
+            <div>
+                @Html.LabelFor(model => model.Product)
+                <div>
+                    @Html.EditorFor(model => model.Product)
+                    @Html.ValidationMessageFor(model => model.Product)
+                </div>
+            </div>
+
+            <div>
+                @Html.LabelFor(model => model.Cost)
+                <div>
+                    @Html.EditorFor(model => model.Cost)
+                    @Html.ValidationMessageFor(model => model.Cost)
+                </div>
+            </div>
+            <br />
+            <div>
+                <div>
+                    <input type="submit" value="Save" />
+                </div>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <h4>@ViewBag.ErrorMessage</h4>
+}
+
+</body>
+</html>

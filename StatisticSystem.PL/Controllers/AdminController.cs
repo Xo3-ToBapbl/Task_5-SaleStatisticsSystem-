@@ -56,36 +56,15 @@ namespace StatisticSystem.PL.Controllers
         [Authorize(Roles = "admin")]
         public ActionResult FiltredStatistic(string filter, string filterValue)
         {
-            if (filterValue=="")
+            if (filterValue == "")
             {
                 ViewBag.Message = "Please, enter data.";
                 return PartialView();
             }
             else
             {
-                if (filter=="Date")
-                {
-                    DateTime date;
-                    if (DateTime.TryParse(filterValue, out date))
-                    {
-                        Dictionary<SaleModel, string> filtredSalesModel = GetFiltredSales(filter, filterValue);
-                        if (filtredSalesModel.Count!=0)
-                        {
-                            return PartialView(filtredSalesModel);
-                        }
-                        else
-                        {
-                            ViewBag.Message = "There is no data for your request.";
-                            return PartialView();
-                        }                       
-                    }
-                    else
-                    {
-                        ViewBag.Message = "Please, enter valid date.";
-                        return PartialView();
-                    }
-                }
-                else
+                DateTime date;
+                if ((filter == "Date" && DateTime.TryParse(filterValue, out date)) || filter != "Date")
                 {
                     Dictionary<SaleModel, string> filtredSalesModel = GetFiltredSales(filter, filterValue);
                     if (filtredSalesModel.Count != 0)
@@ -98,9 +77,14 @@ namespace StatisticSystem.PL.Controllers
                         return PartialView();
                     }
                 }
-            }
-        }
-
+                else
+                {
+                    ViewBag.Message = "Please, enter valid date.";
+                    return PartialView();
+                }
+            }           
+        }    
+        
         #endregion
 
         #region DeleteManager
@@ -151,40 +135,28 @@ namespace StatisticSystem.PL.Controllers
         [Authorize(Roles = "admin")]
         public ActionResult AddNewManager()
         {
-            ViewBag.Message = "Please fill all fields to add manager";
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> AddNewManager(ManagerModel model)
+        public ActionResult AddNewManager(ManagerModel model)
         {           
-            try
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
+                Mapper.Initialize(cfg =>
                 {
-                    ManagerDTO managerDTO = new ManagerDTO { UserName = model.SecondName, Password = model.Password, Role = model.Role };
-                    OperationDetails details = await ServiceBLL.Add(managerDTO);
-                    if (details.Succedeed)
-                    {
-                        ViewBag.Message = details.Message;
-                        return View();
-                    }
-                    else
-                    {
-                        ViewBag.Message = details.Message;
-                    }
-                }
-                else
-                {
-                    return View(model);
-                }
+                    cfg.CreateMap<ManagerModel, ManagerDTO>().ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.SecondName));
+                });
+                ManagerDTO managerDTO = Mapper.Map<ManagerModel, ManagerDTO>(model);               
+                OperationDetails details = ServiceBLL.Add(managerDTO);
+                ViewBag.Message = details.Message;
+                return View(model);
             }
-            catch(Exception)
+            else
             {
-                ViewBag.Message = "Unable to add manager. Inner error.";
+                return View(model);
             }
-            return View(model);
         }
 
         #endregion
@@ -203,14 +175,19 @@ namespace StatisticSystem.PL.Controllers
         [HttpPost]
         [Authorize(Roles = "admin")]
         public ActionResult FiltredSales(string managerId, string filter, string filterValue)
-        {;
-            if (filter=="Date")
+        {
+            if (filter != "None" && filterValue == "")
             {
-                DateTime outDate;
-                if (DateTime.TryParse(filterValue, out outDate))
+                ViewBag.Message = "Please, enter data.";
+                return PartialView();
+            }
+            else
+            {
+                DateTime date;
+                if ((filter == "Date" && DateTime.TryParse(filterValue, out date)) || filter != "Date")
                 {
                     SaleCollectionModel model = GetSaleCollectionModel(managerId, filter, filterValue);
-                    if (model.Sales.Count()!=0)
+                    if (model.Sales.Count() != 0)
                     {
                         return PartialView(model);
                     }
@@ -219,7 +196,6 @@ namespace StatisticSystem.PL.Controllers
                         ViewBag.Message = "There is no data for your request.";
                         return PartialView();
                     }
-                    
                 }
                 else
                 {
@@ -227,41 +203,27 @@ namespace StatisticSystem.PL.Controllers
                     return PartialView();
                 }
             }
-            else
-            {
-                SaleCollectionModel model = GetSaleCollectionModel(managerId, filter, filterValue);
-                if (model.Sales.Count() != 0)
-                {
-                    return PartialView(model);
-                }
-                else
-                {
-                    ViewBag.Message = "There is no data for your request.";
-                    return PartialView();
-                }
-            }           
         }
 
         [HttpGet]
         [Authorize(Roles = "admin")]
-        public ActionResult EditSale(string id)
+        public ActionResult EditSale(string id, string managerId)
         {
             SaleDTO saleDTO = ServiceBLL.GetSale(id);
             if (saleDTO != null)
             {
                 Mapper.Initialize(cfg =>
                 {
-                    cfg.CreateMap<SaleDTO, SaleModel>().
-                    ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date.ToString("d"))).
-                    ForMember(dest => dest.Cost, opt => opt.MapFrom(src => src.Cost.ToString()));
+                    cfg.CreateMap<SaleDTO, SaleModel>();
                 });
                 SaleModel model = Mapper.Map<SaleDTO, SaleModel>(saleDTO);
-                return PartialView(model);
+                return View(model);
             }
             else
             {
-                ViewBag.Message = "There is no sale to edit";
-                return PartialView();
+                SaleModel model = new SaleModel { ManagerId = managerId };
+                ViewBag.ErrorMessage = "There is no sale to edit";
+                return View(model);
             }
         }
 
@@ -272,23 +234,13 @@ namespace StatisticSystem.PL.Controllers
         {
             if (ModelState.IsValid)
             {
-                DateTime dateValue;
-                if (!DateTime.TryParse(saleModel.Date, out dateValue))
+                Mapper.Initialize(cfg =>
                 {
-                    ViewBag.Message = "Current date is not exist.";
-                }
-                else
-                {
-                    Mapper.Initialize(cfg =>
-                    {
-                        cfg.CreateMap<SaleModel, SaleDTO>().
-                        ForMember(dest => dest.Date, opt => opt.MapFrom(src => DateTime.Parse(src.Date))).
-                        ForMember(dest => dest.Cost, opt => opt.MapFrom(src => Convert.ToInt32(src.Cost)));
-                    });
-                    SaleDTO saleDTO = Mapper.Map<SaleModel, SaleDTO>(saleModel);
-                    OperationDetails detail = ServiceBLL.UpdateSale(saleDTO);
-                    ViewBag.Message = detail.Message;
-                }                 
+                    cfg.CreateMap<SaleModel, SaleDTO>();
+                });
+                SaleDTO saleDTO = Mapper.Map<SaleModel, SaleDTO>(saleModel);
+                OperationDetails detail = ServiceBLL.UpdateSale(saleDTO);
+                ViewBag.Message = detail.Message;               
             }
             else
             {
@@ -328,9 +280,7 @@ namespace StatisticSystem.PL.Controllers
             IEnumerable<SaleDTO> salesDTO = ServiceBLL.GetSalesByManager(id, filter, filterValue);
             Mapper.Initialize(cfg =>
             {
-                cfg.CreateMap<SaleDTO, SaleModel>().
-                ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date.ToString("d"))).
-                ForMember(dest => dest.Cost, opt => opt.MapFrom(src => src.Cost.ToString()));
+                cfg.CreateMap<SaleDTO, SaleModel>();
             });
             IEnumerable<SaleModel> sales = Mapper.Map<IEnumerable<SaleDTO>, IEnumerable<SaleModel>>(salesDTO);
             return new SaleCollectionModel { Sales = sales };
@@ -341,9 +291,7 @@ namespace StatisticSystem.PL.Controllers
             Dictionary<SaleDTO, string> filtredSalesDTO = ServiceBLL.GetFiltredSales(filter, filterValue);
             Mapper.Initialize(cfg =>
                     {
-                        cfg.CreateMap<SaleDTO, SaleModel>().
-                        ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date.ToString("d"))).
-                        ForMember(dest => dest.Cost, opt => opt.MapFrom(src => src.Cost.ToString()));
+                        cfg.CreateMap<SaleDTO, SaleModel>();
                     });   
             return Mapper.Map<Dictionary<SaleDTO, string>, Dictionary<SaleModel, string>>(filtredSalesDTO);
         }

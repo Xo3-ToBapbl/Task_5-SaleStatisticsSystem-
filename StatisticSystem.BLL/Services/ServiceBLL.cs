@@ -28,20 +28,27 @@ namespace StatisticSystem.BLL.Services
         }
 
 
-        public async Task<OperationDetails> Add(ManagerDTO managerDTO)
+        public OperationDetails Add(ManagerDTO managerDTO)
         {
-            var manager = await DataBase.Managers.FindByNameAsync(managerDTO.UserName);
+            var manager = DataBase.Managers.FindByName(managerDTO.UserName);
             if (manager == null)
             {
                 var managerDAL = new Manager { UserName = managerDTO.UserName };
-                var result = await DataBase.Managers.CreateAsync(managerDAL, managerDTO.Password);
-                if (result.Errors.Count() > 0)
+                try
                 {
-                    return new OperationDetails(false, result.Errors.FirstOrDefault(), "");
+                    var result = DataBase.Managers.Create(managerDAL, managerDTO.Password);
+                    if (result.Errors.Count() > 0)
+                    {
+                        return new OperationDetails(false, result.Errors.FirstOrDefault(), "");
+                    }
+                    var roleResult = DataBase.Managers.AddToRole(managerDAL.Id, managerDTO.Role);
+                    DataBase.SaveChanges();
+                    return new OperationDetails(true, "Manager add to service.", "");
                 }
-                await DataBase.Managers.AddToRoleAsync(managerDAL.Id, managerDTO.Role);
-                await DataBase.SaveAsync();
-                return new OperationDetails(true, "Manager add to service.", "");
+                catch(DataException)
+                {
+                    return new OperationDetails(true, "Unable to add user. Inner error.", "");
+                }
             }
             else
             {

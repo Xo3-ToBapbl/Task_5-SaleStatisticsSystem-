@@ -9,16 +9,17 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Add new manager</title>
-    @Styles.Render("~/Content/Site.css")
+    <title>AddNewManager</title>
 </head>
 <body>
-    <div>@Html.ActionLink("Back", "AdminPage")</div>
-    <div>@ViewBag.Message</div>
+    @Html.ActionLink("Back", "AdminPage")
     @using (Html.BeginForm()) 
     {
         @Html.AntiForgeryToken()
+        
         <div>
+            <h4>Add new manager</h4>
+            <h4>@ViewBag.Message</h4>
             @Html.ValidationSummary(true)
             <div>
                 @Html.LabelFor(model => model.SecondName)
@@ -39,14 +40,14 @@
             <div>
                 @Html.LabelFor(model => model.Role)
                 <div>
-                    @Html.DropDownListFor(model => model.Role, new SelectList(StatisticSystem.PL.Models.ManagerModel.Roles))
+                    @Html.DropDownListFor(model => model.Role, new SelectList(StatisticSystem.PL.Utill.DropDownLists.Roles))
+                    @Html.ValidationMessageFor(model => model.Role)
                 </div>
             </div>
-    
+            <br />
             <div>
-                <br />
                 <div>
-                    <input type="submit" value="Add">
+                    <input type="submit" value="Add" />
                 </div>
             </div>
         </div>

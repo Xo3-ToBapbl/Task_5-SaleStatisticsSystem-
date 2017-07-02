@@ -7,6 +7,14 @@ namespace StatisticSystem.PL.Utill
 {
     public static class DropDownLists
     {
+        public static IEnumerable<string> Roles
+        {
+            get
+            {
+                return new List<string> { "user", "admin" };
+            }
+        }
+
         public static IEnumerable<string> Filtres
         {
             get

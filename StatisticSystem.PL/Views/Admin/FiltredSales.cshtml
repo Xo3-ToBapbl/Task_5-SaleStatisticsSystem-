@@ -33,11 +33,11 @@
                 {
                     <tr>
                         <td>@item.Client</td>
-                        <td>@item.Date</td>
+                        <td>@item.Date.ToString("d")</td>
                         <td>@item.Product</td>
                         <td>@item.Cost</td>
                         <td>
-                            @Html.ActionLink("Edit", "EditSale", new { id = item.Id }, new { @class = "viewDialog", data_dialog_title = "Edit sale" }) |
+                            @Html.ActionLink("Edit", "EditSale", new { id = item.Id, managerId = item.ManagerId }) |
                             @Html.ActionLink("Delete", "DeleteSale", new { id = item.Id, managerId = item.ManagerId }, new { @class = "viewDialog", data_dialog_title = "Delete sale" })
                         </td>
                     </tr>

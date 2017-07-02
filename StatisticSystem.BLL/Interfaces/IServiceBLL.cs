@@ -9,7 +9,7 @@ namespace StatisticSystem.BLL.Interfaces
 {
     public interface IServiceBLL:IDisposable
     {
-        Task<OperationDetails> Add(ManagerDTO userDTO);
+        OperationDetails Add(ManagerDTO managerDTO);
         Task<ClaimsIdentity> Authenticate(ManagerDTO userDTO);
         ManagerDTO GetManagerById(string id);
         IEnumerable<SaleDTO> GetSalesByManager(string id, string filter, string filterValue);
