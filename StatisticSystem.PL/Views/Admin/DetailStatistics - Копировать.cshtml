@@ -53,18 +53,20 @@
             data.addColumn('string', 'Date');
             data.addColumn('number', 'Count');
 
-            data.addRows([
-                                ['Work', 11],
-                                ['Eat', 2],
-                                ['Commute', 2],
-                                ['Watch TV', 2],
-            ]);
-            
+            $.getJSON('@Url.Action("GetProducts", "Admin")', null,
+                                                          function (result) {
+                                                              if (result.Dates.length) {
+                                                                  $.each(result.Dates, function (index, c) {
+                                                                      data.addRow(
+                                                                          [c.Name, c.Value]
+                                                                      );
+                                                                  });
 
-            var chart = new google.visualization.PieChart(
-            document.getElementById('chart_div'));
-            chart.draw(data, options);
-                                                          
+                                                                  var chart = new google.visualization.PieChart(
+                                                                                        document.getElementById('chart_div'));
+                                                                  chart.draw(data, options);
+                                                              };
+                                                          });
         }
     </script>
 </body>

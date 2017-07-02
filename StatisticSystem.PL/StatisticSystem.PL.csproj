@@ -278,13 +278,14 @@
     <Content Include="Views\Admin\Sales.cshtml" />
     <Content Include="Views\User\ManagerPage.cshtml" />
     <Content Include="Views\User\Sales.cshtml" />
-    <Content Include="Views\Admin\FiltredStatistic.cshtml" />
-    <Content Include="Views\Admin\DetailStatistics.cshtml" />
     <Content Include="Views\Admin\DeleteManager.cshtml" />
     <Content Include="Views\Admin\FiltredSales.cshtml" />
     <Content Include="Views\Admin\DeleteSale.cshtml" />
     <Content Include="Views\Admin\AddNewManager.cshtml" />
     <Content Include="Views\Admin\EditSale.cshtml" />
+    <Content Include="Views\Admin\DetailStatistics.cshtml" />
+    <Content Include="Views\Admin\FiltredStatistic.cshtml" />
+    <Content Include="Views\Admin\DetailStatistics - Копировать.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

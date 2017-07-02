@@ -65,7 +65,7 @@ namespace StatisticSystem.PL.Controllers
             {
                 DateTime date;
                 if ((filter == "Date" && DateTime.TryParse(filterValue, out date)) || filter != "Date")
-                {
+                {                   
                     Dictionary<SaleModel, string> filtredSalesModel = GetFiltredSales(filter, filterValue);
                     if (filtredSalesModel.Count != 0)
                     {
@@ -267,11 +267,16 @@ namespace StatisticSystem.PL.Controllers
         #endregion
 
 
-        public JsonResult GetProducts(string managerId)
+        public JsonResult GetProducts()
         {
-            Dictionary<DateTime, int> data = ServiceBLL.GetDateSalesCount(managerId);
-            List<PieChartItem> result = new List<PieChartItem>();
-            data.Keys.ToList().ForEach(x => result.Add(new PieChartItem { Name = x.ToString("d"), Value = data[x] }));
+            //Dictionary<DateTime, int> data = ServiceBLL.GetDateSalesCount(managerId);
+            //List<PieChartItem> result = new List<PieChartItem>();
+            //data.Keys.ToList().ForEach(x => result.Add(new PieChartItem { Name = x.ToString("d"), Value = data[x] }));
+            var result = new List<PieChartItem>();
+            result.Add(new PieChartItem { Name = "Ukraine", Value = 8 });
+            result.Add(new PieChartItem { Name = "Russia", Value = 6 });
+            result.Add(new PieChartItem { Name = "Belarus", Value = 6 });
+            result.Add(new PieChartItem { Name = "USA", Value = 4 });
             return Json(new { Dates = result }, JsonRequestBehavior.AllowGet);
         }
 
