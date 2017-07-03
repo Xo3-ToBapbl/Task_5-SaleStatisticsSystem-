@@ -7,28 +7,28 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Sales</title>
-    @Styles.Render("~/Content/Site.css")
+    <title>Detail Statistics</title>
 </head>
 <body>
-    <div>@Html.ActionLink("Back", "AdminPage")</div>
-    <h4>Select filter to display sales</h4>
+    <div>@Html.ActionLink("Back", "ManagerPage")</div>
     <h4>@ViewBag.Message</h4>
     <div>
-        @using (Ajax.BeginForm("FiltredSales", new AjaxOptions { UpdateTargetId = "filtredSalesResult" }))
+        @using (Ajax.BeginForm("FiltredStatistic", new AjaxOptions { UpdateTargetId = "filtredSalesResult" }))
         {
-            @Html.Hidden("managerId", (string)ViewBag.ManagerId)
+            @Html.ValidationSummary(true)
             @Html.Label("Filter type:")
             <br />
-            @Html.DropDownList("filter", new SelectList(StatisticSystem.PL.Utills.Filtres.SaleFiltres))
+            @Html.DropDownList("filter", new SelectList(StatisticSystem.PL.Utills.Filtres.DetailStatisticFiltres))
             <br />
             @Html.Label("Filter value:")
             <br />
             @Html.Editor("filterValue", new { htmlAttributes = new { placeholder = "01.01.2017" } })
             <input type="submit" value="Filter" />
-        }
+        }        
     </div>
 
     <div id="filtredSalesResult"></div>
+    
+  
 </body>
 </html>

@@ -1,0 +1,43 @@
+﻿@model StatisticSystem.PL.Models.SaleCollectionModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Sales</title>
+    @Styles.Render("~/Content/Site.css")
+</head>
+<body>
+    <div id="filtredSalesResult">
+        @if (ViewBag.Message == null)
+        {
+            <table>
+                <tr>
+                    <th>@Html.DisplayName("Client")</th>
+                    <th>@Html.DisplayName("Date")</th>
+                    <th>@Html.DisplayName("Product")</th>
+                    <th>@Html.DisplayName("Cost")</th>
+                </tr>
+                @foreach (StatisticSystem.PL.Models.SaleModel item in Model.Sales)
+                {
+                    <tr>
+                        <td>@item.Client</td>
+                        <td>@item.Date.ToString("d")</td>
+                        <td>@item.Product</td>
+                        <td>@item.Cost</td>                       
+                    </tr>
+                }
+            </table>
+        }
+        else
+        {
+            <h4>@ViewBag.Message</h4>
+        }   
+    </div>
+</body>
+</html>

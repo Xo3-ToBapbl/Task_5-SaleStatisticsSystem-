@@ -24,6 +24,14 @@ namespace StatisticSystem.PL.Controllers
             }
         }
 
+        private Functions Functions
+        {
+            get
+            {
+                return new Functions();
+            }
+        }
+
         #region AdminPage
 
         [Authorize(Roles = "admin")]
@@ -48,7 +56,7 @@ namespace StatisticSystem.PL.Controllers
         [Authorize(Roles = "admin")]
         public ActionResult DetailStatistics()
         {
-            ViewBag.Message = Utill.FilterMessage; 
+            ViewBag.Message = Utills.MessagesPL.FilterMessage; 
             return View();
         }
 
@@ -58,7 +66,7 @@ namespace StatisticSystem.PL.Controllers
         {
             if (filterValue == "")
             {
-                ViewBag.Message = Utill.EmptyFieldMessage;
+                ViewBag.Message = Utills.MessagesPL.EmptyFieldMessage;
                 return PartialView();
             }
             else
@@ -66,20 +74,20 @@ namespace StatisticSystem.PL.Controllers
                 DateTime date;
                 if ((filter == "Date" && DateTime.TryParse(filterValue, out date)) || filter != "Date")
                 {                   
-                    Dictionary<SaleModel, string> filtredSalesModel = GetFiltredSales(filter, filterValue);
+                    Dictionary<SaleModel, string> filtredSalesModel = Functions.GetFiltredSales(ServiceBLL, filter, filterValue);
                     if (filtredSalesModel.Count != 0)
                     {
                         return PartialView(filtredSalesModel);
                     }
                     else
                     {
-                        ViewBag.Message = Utill.EmptyDataMessage;
+                        ViewBag.Message = Utills.MessagesPL.EmptyDataMessage;
                         return PartialView();
                     }
                 }
                 else
                 {
-                    ViewBag.Message = Utill.InvalidDateMessage;
+                    ViewBag.Message = Utills.MessagesPL.InvalidDateMessage;
                     return PartialView();
                 }
             }           
@@ -103,7 +111,7 @@ namespace StatisticSystem.PL.Controllers
                 ManagerModel managerModel = Mapper.Map<ManagerDTO, ManagerModel>(managerDTO);
                 if (managerModel.Role == null || managerModel.Role == "admin")
                 {
-                    ViewBag.Message = Utill.ErrorDeleteUserMessage;
+                    ViewBag.Message = Utills.MessagesPL.ErrorDeleteUserMessage;
                     return PartialView();
                 }
                 else
@@ -113,7 +121,7 @@ namespace StatisticSystem.PL.Controllers
             }
             else
             {
-                ViewBag.Message = Utill.EmptyUserDeleteMessage;
+                ViewBag.Message = Utills.MessagesPL.EmptyUserDeleteMessage;
                 return PartialView();
             }
         }
@@ -178,7 +186,7 @@ namespace StatisticSystem.PL.Controllers
         {
             if (filter != "None" && filterValue == "")
             {
-                ViewBag.Message = "Please, enter data.";
+                ViewBag.Message = MessagesPL.EmptyFieldMessage;
                 return PartialView();
             }
             else
@@ -186,20 +194,20 @@ namespace StatisticSystem.PL.Controllers
                 DateTime date;
                 if ((filter == "Date" && DateTime.TryParse(filterValue, out date)) || filter != "Date")
                 {
-                    SaleCollectionModel model = GetSaleCollectionModel(managerId, filter, filterValue);
+                    SaleCollectionModel model = Functions.GetSaleCollectionModel(ServiceBLL, managerId, filter, filterValue);
                     if (model.Sales.Count() != 0)
                     {
                         return PartialView(model);
                     }
                     else
                     {
-                        ViewBag.Message = "There is no data for your request.";
+                        ViewBag.Message = MessagesPL.EmptyDataMessage;
                         return PartialView();
                     }
                 }
                 else
                 {
-                    ViewBag.Message = "Please, enter valid date.";
+                    ViewBag.Message = MessagesPL.InvalidDateMessage;
                     return PartialView();
                 }
             }
@@ -222,7 +230,7 @@ namespace StatisticSystem.PL.Controllers
             else
             {
                 SaleModel model = new SaleModel { ManagerId = managerId };
-                ViewBag.ErrorMessage = Utill.EmptySaleEditMessage;
+                ViewBag.ErrorMessage = Utills.MessagesPL.EmptySaleEditMessage;
                 return View(model);
             }
         }
@@ -265,26 +273,5 @@ namespace StatisticSystem.PL.Controllers
         }
 
         #endregion
-
-        private SaleCollectionModel GetSaleCollectionModel(string id, string filter="None", string filterValue="None")
-        {
-            IEnumerable<SaleDTO> salesDTO = ServiceBLL.GetSalesByManager(id, filter, filterValue);
-            Mapper.Initialize(cfg =>
-            {
-                cfg.CreateMap<SaleDTO, SaleModel>();
-            });
-            IEnumerable<SaleModel> sales = Mapper.Map<IEnumerable<SaleDTO>, IEnumerable<SaleModel>>(salesDTO);
-            return new SaleCollectionModel { Sales = sales };
-        }
-
-        private Dictionary<SaleModel, string> GetFiltredSales(string filter, string filterValue)
-        {
-            Dictionary<SaleDTO, string> filtredSalesDTO = ServiceBLL.GetFiltredSales(filter, filterValue);
-            Mapper.Initialize(cfg =>
-                    {
-                        cfg.CreateMap<SaleDTO, SaleModel>();
-                    });   
-            return Mapper.Map<Dictionary<SaleDTO, string>, Dictionary<SaleModel, string>>(filtredSalesDTO);
-        }
     }
 }

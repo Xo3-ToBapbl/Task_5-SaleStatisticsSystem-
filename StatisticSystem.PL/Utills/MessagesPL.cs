@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace StatisticSystem.PL.Utills
+﻿namespace StatisticSystem.PL.Utills
 {
-    public static class Utill
+    public static class MessagesPL
     {
         public static string FilterMessage
         {
@@ -60,31 +55,6 @@ namespace StatisticSystem.PL.Utills
             get
             {
                 return "There is no sale to edit";
-            }
-        }
-
-
-        public static IEnumerable<string> Roles
-        {
-            get
-            {
-                return new List<string> { "user", "admin" };
-            }
-        }
-
-        public static IEnumerable<string> Filtres
-        {
-            get
-            {
-                return new List<string> { "Date", "Client", "Product" };
-            }
-        }
-
-        public static IEnumerable<string> SaleFiltres
-        {
-            get
-            {
-                return new List<string> { "None", "Date", "Client", "Product" };
             }
         }
     }

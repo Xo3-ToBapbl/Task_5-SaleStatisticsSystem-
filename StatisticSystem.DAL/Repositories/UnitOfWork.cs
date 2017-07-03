@@ -4,10 +4,7 @@ using System.Threading.Tasks;
 using StatisticSystem.DAL.EF;
 using Microsoft.AspNet.Identity.EntityFramework;
 using StatisticSystem.DAL.Entities;
-using System.Collections.Generic;
 using Microsoft.AspNet.Identity;
-using System.Linq;
-using System.Data;
 
 namespace StatisticSystem.DAL.Repositories
 {

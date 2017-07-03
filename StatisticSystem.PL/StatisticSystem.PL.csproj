@@ -189,7 +189,9 @@
     <Compile Include="Models\SaleCollectionModel.cs" />
     <Compile Include="Models\SaleModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utills\Utill.cs" />
+    <Compile Include="Utills\Filtres.cs" />
+    <Compile Include="Utills\Functions.cs" />
+    <Compile Include="Utills\MessagesPL.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
@@ -284,6 +286,9 @@
     <Content Include="Views\Admin\EditSale.cshtml" />
     <Content Include="Views\Admin\DetailStatistics.cshtml" />
     <Content Include="Views\Admin\FiltredStatistic.cshtml" />
+    <Content Include="Views\User\FiltredStatistic.cshtml" />
+    <Content Include="Views\User\DetailStatistics.cshtml" />
+    <Content Include="Views\User\FiltredSales.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

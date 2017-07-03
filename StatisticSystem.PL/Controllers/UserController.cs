@@ -22,50 +22,110 @@ namespace StatisticSystem.PL.Controllers
             }
         }
 
-        [Authorize(Roles = "user")]
-        public ActionResult ManagerPage()
+        private Functions Functions
         {
+            get
+            {
+                return new Functions();
+            }
+        }
+
+        [Authorize(Roles = "user")]
+        public ActionResult ManagerPage(string message = "")
+        {
+            ViewBag.Message = message;
             ViewBag.Name = User.Identity.Name;
             IEnumerable<ManagerDTO> managersDTO = ServiceBLL.GetManagers();
             Mapper.Initialize(cfg =>
             {
-                cfg.CreateMap<ManagerDTO, ManagerModel>().ForMember(dest=>dest.SecondName, opt=>opt.MapFrom(src=>src.UserName));
+                cfg.CreateMap<ManagerDTO, ManagerModel>().ForMember(dest => dest.SecondName, opt => opt.MapFrom(src => src.UserName));
             });
-            IEnumerable<ManagerModel> managersModel = Mapper.Map<IEnumerable<ManagerDTO>, IEnumerable<ManagerModel>>(managersDTO);                   
+            IEnumerable<ManagerModel> managersModel = Mapper.Map<IEnumerable<ManagerDTO>, IEnumerable<ManagerModel>>(managersDTO);
             return View(managersModel);
         }
 
         [HttpGet]
         [Authorize(Roles = "user")]
-        public ActionResult Sales(string ManagerId)
+        public ActionResult DetailStatistics()
         {
-            SaleCollectionModel model = GetSaleCollectionModel(ManagerId);
-
-            return View(model);
+            ViewBag.Message = MessagesPL.FilterMessage;
+            return View();
         }
 
         [HttpPost]
         [Authorize(Roles = "user")]
-        public ActionResult Sales(SaleCollectionModel model)
+        public ActionResult FiltredStatistic(string filter, string filterValue)
         {
-            if(model.Filter=="Date")
+            if (filterValue == "")
             {
-                DateTime outDate;
-                if (DateTime.TryParse(model.FilterValue, out outDate))
-                {
-                    model = GetSaleCollectionModel(model.ManagerId, model.Filter, model.FilterValue);
-                }
-                else
-                {
-                    ViewBag.Message = "Please, enter correct date.";
-                }
+                ViewBag.Message = MessagesPL.EmptyFieldMessage;
+                return PartialView();
             }
             else
             {
-                model = GetSaleCollectionModel(model.ManagerId, model.Filter, model.FilterValue);
+                DateTime date;
+                if ((filter == "Date" && DateTime.TryParse(filterValue, out date)) || filter != "Date")
+                {
+                    Dictionary<SaleModel, string> filtredSalesModel = Functions.GetFiltredSales(ServiceBLL, filter, filterValue);
+                    if (filtredSalesModel.Count != 0)
+                    {
+                        return PartialView(filtredSalesModel);
+                    }
+                    else
+                    {
+                        ViewBag.Message = MessagesPL.EmptyDataMessage;
+                        return PartialView();
+                    }
+                }
+                else
+                {
+                    ViewBag.Message = MessagesPL.InvalidDateMessage;
+                    return PartialView();
+                }
             }
-            return View(model);
-        }       
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "user")]
+        public ActionResult Sales(string managerId, string message = "")
+        {
+            ViewBag.Message = message;
+            ViewBag.ManagerId = managerId;
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "user")]
+        public ActionResult FiltredSales(string managerId, string filter, string filterValue)
+        {
+            if (filter != "None" && filterValue == "")
+            {
+                ViewBag.Message = MessagesPL.EmptyFieldMessage;
+                return PartialView();
+            }
+            else
+            {
+                DateTime date;
+                if ((filter == "Date" && DateTime.TryParse(filterValue, out date)) || filter != "Date")
+                {
+                    SaleCollectionModel model = Functions.GetSaleCollectionModel(ServiceBLL, managerId, filter, filterValue);
+                    if (model.Sales.Count() != 0)
+                    {
+                        return PartialView(model);
+                    }
+                    else
+                    {
+                        ViewBag.Message = MessagesPL.EmptyDataMessage;
+                        return PartialView();
+                    }
+                }
+                else
+                {
+                    ViewBag.Message = MessagesPL.InvalidDateMessage;
+                    return PartialView();
+                }
+            }
+        }
 
 
         private SaleCollectionModel GetSaleCollectionModel(string id, string filter="None", string filterValue="None")

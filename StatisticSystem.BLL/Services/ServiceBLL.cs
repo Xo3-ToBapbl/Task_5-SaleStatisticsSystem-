@@ -43,16 +43,16 @@ namespace StatisticSystem.BLL.Services
                     }
                     var roleResult =await DataBase.Managers.AddToRoleAsync(managerDAL.Id, managerDTO.Role);
                     await DataBase.SaveAsync();
-                    return new OperationDetails(true, Messages.SuccessManagerAdd);
+                    return new OperationDetails(true, MessagesBLL.SuccessManagerAdd);
                 }
                 catch(DataException e)
                 {
-                    return new OperationDetails(true, Messages.ErrorManagerAdd, e.Source);
+                    return new OperationDetails(true, MessagesBLL.ErrorManagerAdd, e.Source);
                 }
             }
             else
             {
-                return new OperationDetails(false, Messages.ManagerExist, managerDTO.UserName);
+                return new OperationDetails(false, MessagesBLL.ManagerExist, managerDTO.UserName);
             }
         }
 
@@ -61,11 +61,11 @@ namespace StatisticSystem.BLL.Services
             try
             {
                 await DataBase.DeleteManager(Id);
-                return new OperationDetails(true, Messages.SuccessManagerDelete);
+                return new OperationDetails(true, MessagesBLL.SuccessManagerDelete);
             }
             catch (DataException e)
             {
-                return new OperationDetails(false, Messages.ErrorManagerDelete, e.Source);
+                return new OperationDetails(false, MessagesBLL.ErrorManagerDelete, e.Source);
             }          
         }
 
@@ -151,11 +151,11 @@ namespace StatisticSystem.BLL.Services
             try
             {
                 await DataBase.Sales.Update(Mapper.Map<SaleDTO, Sale>(saleDTO));
-                details = new OperationDetails(true, Messages.SuccessUpdateSale);
+                details = new OperationDetails(true, MessagesBLL.SuccessUpdateSale);
             }
             catch (DataException e)
             {
-                details = new OperationDetails(true, Messages.ErrorUpdateSale, e.Source);
+                details = new OperationDetails(true, MessagesBLL.ErrorUpdateSale, e.Source);
             }
             return details;
         }
@@ -166,11 +166,11 @@ namespace StatisticSystem.BLL.Services
             try
             {
                 await DataBase.Sales.Delete(id);
-                details = new OperationDetails(true, Messages.SuccessDeleteeSale);
+                details = new OperationDetails(true, MessagesBLL.SuccessDeleteeSale);
             }
             catch (DataException e)
             {
-                details = new OperationDetails(true, Messages.ErrorDeleteSale, e.Source);
+                details = new OperationDetails(true, MessagesBLL.ErrorDeleteSale, e.Source);
             }
             return details;
         }

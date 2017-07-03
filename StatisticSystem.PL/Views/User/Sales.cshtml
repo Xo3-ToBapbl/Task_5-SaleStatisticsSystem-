@@ -1,6 +1,4 @@
-﻿@model StatisticSystem.PL.Models.SaleCollectionModel
-
-@{
+﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -14,83 +12,23 @@
 </head>
 <body>
     <div>@Html.ActionLink("Back", "ManagerPage")</div>
-    <br />
+    <h4>Select filter to display sales</h4>
+    <h4>@ViewBag.Message</h4>
     <div>
-        @Html.Label("Filter by:")
-        <div>
-            @using (Html.BeginForm())
-            {
-                @Html.HiddenFor(model => model.ManagerId, new { })
-                @Html.Hidden("managerId", Model.ManagerId)
-                <div>@ViewBag.Message</div>
-                @Html.DropDownListFor(model=>model.Filter, new SelectList(StatisticSystem.PL.Models.SaleCollectionModel.Filtres))               
-                <br />
-                @Html.Label("Filter value:")
-                <br />
-                @Html.EditorFor(model => model.FilterValue)
-                <input type="submit" value="Filter">
-            }              
-        </div>
-    </div>
-    <table>
-        <tr>
-            <th>@Html.DisplayName("Client")</th>
-            <th>@Html.DisplayName("Date")</th>
-            <th>@Html.DisplayName("Product")</th>
-            <th>@Html.DisplayName("Cost")</th>
-        </tr>
-        @foreach (StatisticSystem.PL.Models.SaleModel item in Model.Sales)
+        @using (Ajax.BeginForm("FiltredSales", new AjaxOptions { UpdateTargetId = "filtredSalesResult" }))
         {
-            <tr>
-                <td>@item.Client</td>
-                <td>@item.Date</td>
-                <td>@item.Product</td>
-                <td>@item.Cost</td>
-            </tr>
+            @Html.Hidden("managerId", (string)ViewBag.ManagerId)
+            @Html.Label("Filter type:")
+            <br />
+            @Html.DropDownList("filter", new SelectList(StatisticSystem.PL.Utills.Filtres.SaleFiltres))
+            <br />
+            @Html.Label("Filter value:")
+            <br />
+            @Html.Editor("filterValue", new { htmlAttributes = new { placeholder = "01.01.2017" } })
+            <input type="submit" value="Filter" />
         }
-    </table>
+    </div>
 
-    <div id="chart_div"></div>
-
-    <script type="text/javascript" src="https://www.google.com/jsapi">
-    </script>
-
-    <script type="text/javascript">
-
-        google.load('visualization', '1.0', { 'packages': ['corechart'] });
-
-
-        google.setOnLoadCallback(drawChart);
-
-        function drawChart() {
-
-            var options = {
-                'title': 'Sales count by dates (swipe on the chart to see details)',
-                'width': 550,
-                'height': 350
-            };
-
-            var data = new google.visualization.DataTable();
-            data.addColumn('string', 'Date');
-            data.addColumn('number', 'Count');
-
-            $.getJSON('@Url.Action("GetProducts", "User", new { managerId = Html.ValueFor(model=>model.ManagerId) })', null,
-                                                          function (result) {
-                                                              if (result.Dates.length) {
-                                                                  $.each(result.Dates, function (index, c) {
-                                                                      data.addRow(
-                                                                          [c.Name, c.Value]
-                                                                      );
-                                                                  });
-
-                                                                  var chart = new google.visualization.PieChart(
-                                                                                        document.getElementById('chart_div'));
-                                                                  chart.draw(data, options);
-                                                              };
-                                                          });
-        }
-    </script>
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
+    <div id="filtredSalesResult"></div>
 </body>
 </html>

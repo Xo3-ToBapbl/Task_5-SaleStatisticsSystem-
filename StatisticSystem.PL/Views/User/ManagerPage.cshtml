@@ -9,12 +9,15 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Manager Page</title>
-    @Styles.Render("~/Content/Site.css")
+    <title>Admin Page</title>
 </head>
 <body>
-    <div> 
-        <h3>Hello manager @ViewBag.Name !</h3> 
+    <div>
+        <h3>Hello manager @ViewBag.Name !</h3>
+    </div>
+    <h4>@ViewBag.Message</h4>
+    <div>
+        @Html.ActionLink("Detail statistics", "DetailStatistics")
     </div>
     <table>
         <tr>
@@ -26,10 +29,11 @@
             <tr>
                 <td>@item.SecondName</td>
                 <td>
-                    @Html.ActionLink("Sales", "Sales", new { ManagerId = item.Id })
-                </td>             
+                    @Html.ActionLink("Sales", "Sales", new { ManagerId = item.Id })                  
+                </td>
             </tr>
         }
     </table>
+
 </body>
 </html>

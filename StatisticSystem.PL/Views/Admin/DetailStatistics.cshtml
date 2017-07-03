@@ -7,7 +7,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>DetailStatistics</title>
+    <title>Detail Statistics</title>
 </head>
 <body>
     <div>@Html.ActionLink("Back", "AdminPage")</div>
@@ -18,7 +18,7 @@
             @Html.ValidationSummary(true)
             @Html.Label("Filter type:")
             <br />
-            @Html.DropDownList("filter", new SelectList(StatisticSystem.PL.Utills.Utill.Filtres))
+            @Html.DropDownList("filter", new SelectList(StatisticSystem.PL.Utills.Filtres.DetailStatisticFiltres))
             <br />
             @Html.Label("Filter value:")
             <br />
@@ -28,7 +28,7 @@
     </div>
 
     <div id="filtredSalesResult"></div>
-
+    
   
 </body>
 </html>
