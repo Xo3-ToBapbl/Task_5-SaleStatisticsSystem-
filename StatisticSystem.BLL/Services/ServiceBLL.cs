@@ -28,32 +28,45 @@ namespace StatisticSystem.BLL.Services
         }
 
 
-        public OperationDetails Add(ManagerDTO managerDTO)
+        public async Task<OperationDetails> AddManager(ManagerDTO managerDTO)
         {
-            var manager = DataBase.Managers.FindByName(managerDTO.UserName);
+            var manager =await DataBase.Managers.FindByNameAsync(managerDTO.UserName);
             if (manager == null)
             {
                 var managerDAL = new Manager { UserName = managerDTO.UserName };
                 try
                 {
-                    var result = DataBase.Managers.Create(managerDAL, managerDTO.Password);
+                    var result =await DataBase.Managers.CreateAsync(managerDAL, managerDTO.Password);
                     if (result.Errors.Count() > 0)
                     {
-                        return new OperationDetails(false, result.Errors.FirstOrDefault(), "");
+                        return new OperationDetails(false, result.Errors.FirstOrDefault());
                     }
-                    var roleResult = DataBase.Managers.AddToRole(managerDAL.Id, managerDTO.Role);
-                    DataBase.SaveChanges();
-                    return new OperationDetails(true, "Manager add to service.", "");
+                    var roleResult =await DataBase.Managers.AddToRoleAsync(managerDAL.Id, managerDTO.Role);
+                    await DataBase.SaveAsync();
+                    return new OperationDetails(true, Messages.SuccessManagerAdd);
                 }
-                catch(DataException)
+                catch(DataException e)
                 {
-                    return new OperationDetails(true, "Unable to add user. Inner error.", "");
+                    return new OperationDetails(true, Messages.ErrorManagerAdd, e.Source);
                 }
             }
             else
             {
-                return new OperationDetails(false, "Manager with current name already exist.", "UserName");
+                return new OperationDetails(false, Messages.ManagerExist, managerDTO.UserName);
             }
+        }
+
+        public async Task<OperationDetails> DeleteManager(string Id)
+        {
+            try
+            {
+                await DataBase.DeleteManager(Id);
+                return new OperationDetails(true, Messages.SuccessManagerDelete);
+            }
+            catch (DataException e)
+            {
+                return new OperationDetails(false, Messages.ErrorManagerDelete, e.Source);
+            }          
         }
 
         public async Task<ClaimsIdentity> Authenticate(ManagerDTO adminDTO)
@@ -127,7 +140,7 @@ namespace StatisticSystem.BLL.Services
             }
         }
 
-        public OperationDetails UpdateSale(SaleDTO saleDTO)
+        public async Task<OperationDetails> UpdateSale(SaleDTO saleDTO)
         {
             Mapper.Initialize(cfg =>
             {
@@ -137,27 +150,27 @@ namespace StatisticSystem.BLL.Services
             OperationDetails details;
             try
             {
-                DataBase.Sales.Update(Mapper.Map<SaleDTO, Sale>(saleDTO));
-                details = new OperationDetails(true, "Sale update in data base.", "");
+                await DataBase.Sales.Update(Mapper.Map<SaleDTO, Sale>(saleDTO));
+                details = new OperationDetails(true, Messages.SuccessUpdateSale);
             }
-            catch (DataException)
+            catch (DataException e)
             {
-                details = new OperationDetails(true, "Unable to update sale. Inner error.", "");
+                details = new OperationDetails(true, Messages.ErrorUpdateSale, e.Source);
             }
             return details;
         }
 
-        public OperationDetails DeleteSale(string id)
+        public async Task<OperationDetails> DeleteSale(string id)
         {
             OperationDetails details;
             try
             {
-                DataBase.Sales.Delete(id);
-                details = new OperationDetails(true, "Sale delete from data base.", "");
+                await DataBase.Sales.Delete(id);
+                details = new OperationDetails(true, Messages.SuccessDeleteeSale);
             }
-            catch (DataException)
+            catch (DataException e)
             {
-                details = new OperationDetails(true, "Unable to delete sale. Inner error.", "");
+                details = new OperationDetails(true, Messages.ErrorDeleteSale, e.Source);
             }
             return details;
         }
@@ -185,20 +198,7 @@ namespace StatisticSystem.BLL.Services
                 return filtredSalesDTO;
             }
 
-        }
-
-        public OperationDetails DeleteManager(string Id)
-        {
-            bool result = DataBase.DeleteManager(Id);
-            if(result)
-            {
-                return new OperationDetails(true, "Manager successfully deleted.", null);
-            }
-            else
-            {
-                return new OperationDetails(false, "Database error.Please, try later.", null);
-            }
-        }
+        }       
 
 
         public void Dispose()

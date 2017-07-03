@@ -12,8 +12,7 @@ namespace StatisticSystem.DAL.Interfaces
         RoleRepository Roles { get; }
         SalesRepository Sales { get; }
 
-        bool DeleteManager(string Id);
-        
+        Task DeleteManager(string Id);
         Task SaveAsync();
         void SaveChanges();
     }

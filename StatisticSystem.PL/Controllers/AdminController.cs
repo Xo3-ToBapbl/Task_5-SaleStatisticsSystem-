@@ -7,10 +7,10 @@ using StatisticSystem.PL.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using StatisticSystem.PL.Utill;
+using StatisticSystem.PL.Utills;
+using System.Threading.Tasks;
 
 namespace StatisticSystem.PL.Controllers
 {
@@ -48,7 +48,7 @@ namespace StatisticSystem.PL.Controllers
         [Authorize(Roles = "admin")]
         public ActionResult DetailStatistics()
         {
-            ViewBag.Message = "Select a filter to display detailed statistics"; 
+            ViewBag.Message = Utill.FilterMessage; 
             return View();
         }
 
@@ -58,7 +58,7 @@ namespace StatisticSystem.PL.Controllers
         {
             if (filterValue == "")
             {
-                ViewBag.Message = "Please, enter data.";
+                ViewBag.Message = Utill.EmptyFieldMessage;
                 return PartialView();
             }
             else
@@ -73,13 +73,13 @@ namespace StatisticSystem.PL.Controllers
                     }
                     else
                     {
-                        ViewBag.Message = "There is no data for your request.";
+                        ViewBag.Message = Utill.EmptyDataMessage;
                         return PartialView();
                     }
                 }
                 else
                 {
-                    ViewBag.Message = "Please, enter valid date.";
+                    ViewBag.Message = Utill.InvalidDateMessage;
                     return PartialView();
                 }
             }           
@@ -103,7 +103,7 @@ namespace StatisticSystem.PL.Controllers
                 ManagerModel managerModel = Mapper.Map<ManagerDTO, ManagerModel>(managerDTO);
                 if (managerModel.Role == null || managerModel.Role == "admin")
                 {
-                    ViewBag.Message = "You can not delete yourself, administrators or a users with an undefined role. Please, call servicemanager.";
+                    ViewBag.Message = Utill.ErrorDeleteUserMessage;
                     return PartialView();
                 }
                 else
@@ -113,7 +113,7 @@ namespace StatisticSystem.PL.Controllers
             }
             else
             {
-                ViewBag.Message = "There is no manager to delete.";
+                ViewBag.Message = Utill.EmptyUserDeleteMessage;
                 return PartialView();
             }
         }
@@ -121,10 +121,10 @@ namespace StatisticSystem.PL.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "admin")]
-        public ActionResult DeleteManager(string Id)
+        public async Task<ActionResult> DeleteManager(string Id)
         {            
-            OperationDetails details = ServiceBLL.DeleteManager(Id);
-            return RedirectToAction("AdminPage", new { message = details.Message });
+            OperationDetails details =await ServiceBLL.DeleteManager(Id);
+            return RedirectToAction("AdminPage", new { message = details.GetFullMessage() });
         }
 
         #endregion
@@ -140,7 +140,7 @@ namespace StatisticSystem.PL.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult AddNewManager(ManagerModel model)
+        public async Task<ActionResult> AddNewManager(ManagerModel model)
         {           
             if (ModelState.IsValid)
             {
@@ -149,8 +149,8 @@ namespace StatisticSystem.PL.Controllers
                     cfg.CreateMap<ManagerModel, ManagerDTO>().ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.SecondName));
                 });
                 ManagerDTO managerDTO = Mapper.Map<ManagerModel, ManagerDTO>(model);               
-                OperationDetails details = ServiceBLL.Add(managerDTO);
-                ViewBag.Message = details.Message;
+                OperationDetails details =await ServiceBLL.AddManager(managerDTO);
+                ViewBag.Message = details.GetFullMessage();
                 return View(model);
             }
             else
@@ -222,7 +222,7 @@ namespace StatisticSystem.PL.Controllers
             else
             {
                 SaleModel model = new SaleModel { ManagerId = managerId };
-                ViewBag.ErrorMessage = "There is no sale to edit";
+                ViewBag.ErrorMessage = Utill.EmptySaleEditMessage;
                 return View(model);
             }
         }
@@ -230,7 +230,7 @@ namespace StatisticSystem.PL.Controllers
         [HttpPost]
         [Authorize(Roles = "admin")]
         [ValidateAntiForgeryToken]
-        public ActionResult EditSale(SaleModel saleModel)
+        public async Task<ActionResult> EditSale(SaleModel saleModel)
         {
             if (ModelState.IsValid)
             {
@@ -239,8 +239,8 @@ namespace StatisticSystem.PL.Controllers
                     cfg.CreateMap<SaleModel, SaleDTO>();
                 });
                 SaleDTO saleDTO = Mapper.Map<SaleModel, SaleDTO>(saleModel);
-                OperationDetails detail = ServiceBLL.UpdateSale(saleDTO);
-                ViewBag.Message = detail.Message;               
+                OperationDetails detail = await ServiceBLL.UpdateSale(saleDTO);
+                ViewBag.Message = detail.GetFullMessage();               
             }
             else
             {
@@ -258,27 +258,13 @@ namespace StatisticSystem.PL.Controllers
 
         [HttpPost]
         [Authorize(Roles = "admin")]
-        public ActionResult DeleteSale(string id, string managerId)
+        public async Task<ActionResult> DeleteSale(string id, string managerId)
         {
-            OperationDetails detail = ServiceBLL.DeleteSale(id);
-            return RedirectToAction("Sales", new { message= detail.Message, managerId = managerId });
+            OperationDetails detail =await ServiceBLL.DeleteSale(id);
+            return RedirectToAction("Sales", new { message= detail.GetFullMessage(), managerId = managerId });
         }
 
         #endregion
-
-
-        public JsonResult GetProducts()
-        {
-            //Dictionary<DateTime, int> data = ServiceBLL.GetDateSalesCount(managerId);
-            //List<PieChartItem> result = new List<PieChartItem>();
-            //data.Keys.ToList().ForEach(x => result.Add(new PieChartItem { Name = x.ToString("d"), Value = data[x] }));
-            var result = new List<PieChartItem>();
-            result.Add(new PieChartItem { Name = "Ukraine", Value = 8 });
-            result.Add(new PieChartItem { Name = "Russia", Value = 6 });
-            result.Add(new PieChartItem { Name = "Belarus", Value = 6 });
-            result.Add(new PieChartItem { Name = "USA", Value = 4 });
-            return Json(new { Dates = result }, JsonRequestBehavior.AllowGet);
-        }
 
         private SaleCollectionModel GetSaleCollectionModel(string id, string filter="None", string filterValue="None")
         {

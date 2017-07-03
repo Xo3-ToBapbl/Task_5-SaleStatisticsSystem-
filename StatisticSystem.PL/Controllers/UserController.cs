@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using StatisticSystem.PL.Utill;
+using StatisticSystem.PL.Utills;
 
 namespace StatisticSystem.PL.Controllers
 {
@@ -20,14 +20,6 @@ namespace StatisticSystem.PL.Controllers
             {
                 return HttpContext.GetOwinContext().GetUserManager<IServiceBLL>();
             }
-        }
-
-        public JsonResult GetProducts(string managerId)
-        {
-            Dictionary<DateTime, int> data = ServiceBLL.GetDateSalesCount(managerId);
-            List<PieChartItem> result = new List<PieChartItem>();
-            data.Keys.ToList().ForEach(x => result.Add(new PieChartItem { Name = x.ToString("d"), Value = data[x] }));
-            return Json(new { Dates = result }, JsonRequestBehavior.AllowGet);
         }
 
         [Authorize(Roles = "user")]

@@ -69,6 +69,7 @@
     <Compile Include="DTO\SaleDTO.cs" />
     <Compile Include="Interfaces\IServiceBLL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\Messages.cs" />
     <Compile Include="Services\NinjectModuleBLL.cs" />
     <Compile Include="Services\OperationDetails.cs" />
     <Compile Include="Services\ServiceBLL.cs" />

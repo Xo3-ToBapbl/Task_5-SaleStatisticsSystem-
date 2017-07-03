@@ -18,7 +18,7 @@
             @Html.ValidationSummary(true)
             @Html.Label("Filter type:")
             <br />
-            @Html.DropDownList("filter", new SelectList(StatisticSystem.PL.Utill.DropDownLists.Filtres))
+            @Html.DropDownList("filter", new SelectList(StatisticSystem.PL.Utills.Utill.Filtres))
             <br />
             @Html.Label("Filter value:")
             <br />
@@ -29,43 +29,6 @@
 
     <div id="filtredSalesResult"></div>
 
-    <div id="chart_div"></div>   
-
-    <script type="text/javascript" src="https://www.google.com/jsapi">
-    </script>
-
-    <script type="text/javascript">
-
-        google.load('visualization', '1.0', { 'packages': ['corechart'] });
-
-
-        google.setOnLoadCallback(drawChart);
-
-        function drawChart() {
-
-            var options = {
-                'title': 'Sales count by dates (swipe on the chart to see details)',
-                'width': 550,
-                'height': 350
-            };
-
-            var data = new google.visualization.DataTable();
-            data.addColumn('string', 'Date');
-            data.addColumn('number', 'Count');
-
-            data.addRows([
-                                ['Work', 11],
-                                ['Eat', 2],
-                                ['Commute', 2],
-                                ['Watch TV', 2],
-            ]);
-            
-
-            var chart = new google.visualization.PieChart(
-            document.getElementById('chart_div'));
-            chart.draw(data, options);
-                                                          
-        }
-    </script>
+  
 </body>
 </html>

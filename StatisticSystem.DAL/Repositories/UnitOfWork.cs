@@ -63,30 +63,17 @@ namespace StatisticSystem.DAL.Repositories
         }
 
 
-        public bool DeleteManager(string Id)
+        public async Task DeleteManager(string Id)
         {
             Manager manager = Managers.FindById(Id);
-            if(manager!=null)
+            if (manager != null)
             {
-                try
-                {
-                    Sales.DeleteAllByManagerId(Id);
-                    Managers.Delete(manager);
-                    SaveChanges();
-                    return true;
-                }
-                catch (DataException)
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                return false;
+                Sales.DeleteAllByManagerId(Id);
+                await Managers.DeleteAsync(manager);
+                await SaveAsync();
             }
         }
-
-            
+         
         public async Task SaveAsync()
         {
             await _dataBase.SaveChangesAsync();

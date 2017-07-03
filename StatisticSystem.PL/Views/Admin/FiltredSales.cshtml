@@ -70,45 +70,6 @@
         });
     });
     </script>
-
-        <script type="text/javascript" src="https://www.google.com/jsapi">
-        </script>
-
-        <script type="text/javascript">
-
-        google.load('visualization', '1.0', { 'packages': ['corechart'] });
-
-
-        google.setOnLoadCallback(drawChart);
-
-        function drawChart() {
-
-            var options = {
-                'title': 'Sales count by dates (swipe on the chart to see details)',
-                'width': 550,
-                'height': 350
-            };
-
-            var data = new google.visualization.DataTable();
-            data.addColumn('string', 'Date');
-            data.addColumn('number', 'Count');
-
-            $.getJSON('@Url.Action("GetProducts", "Admin")', null,
-                                                          function (result) {
-                                                              if (result.Dates.length) {
-                                                                  $.each(result.Dates, function (index, c) {
-                                                                      data.addRow(
-                                                                          [c.Name, c.Value]
-                                                                      );
-                                                                  });
-
-                                                                  var chart = new google.visualization.PieChart(
-                                                                                        document.getElementById('chart_div'));
-                                                                  chart.draw(data, options);
-                                                              };
-                                                          });
-        }
-        </script>
     </div>
 </body>
 </html>

@@ -9,16 +9,16 @@ namespace StatisticSystem.BLL.Interfaces
 {
     public interface IServiceBLL:IDisposable
     {
-        OperationDetails Add(ManagerDTO managerDTO);
+        Task<OperationDetails> AddManager(ManagerDTO managerDTO);
         Task<ClaimsIdentity> Authenticate(ManagerDTO userDTO);
         ManagerDTO GetManagerById(string id);
         IEnumerable<SaleDTO> GetSalesByManager(string id, string filter, string filterValue);
         IEnumerable<ManagerDTO> GetManagers();
-        OperationDetails UpdateSale(SaleDTO saleDTO);
-        OperationDetails DeleteSale(string id);
+        Task<OperationDetails> UpdateSale(SaleDTO saleDTO);
+        Task<OperationDetails> DeleteSale(string id);
         Dictionary<DateTime, int> GetDateSalesCount(string managerId);
         Dictionary<SaleDTO, string> GetFiltredSales(string filter, string filterValue);
-        OperationDetails DeleteManager(string Id);
+        Task<OperationDetails> DeleteManager(string Id);
         SaleDTO GetSale(string id);
     }
 }

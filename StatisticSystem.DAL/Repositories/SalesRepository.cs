@@ -3,6 +3,7 @@ using StatisticSystem.DAL.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace StatisticSystem.DAL.Repositories
 {
@@ -27,17 +28,17 @@ namespace StatisticSystem.DAL.Repositories
             return DataBase.Sales.FirstOrDefault(sale => sale.Id == id);
         }
 
-        public void Update(Sale item)
+        public async Task Update(Sale item)
         {
             DataBase.Entry(item).State = System.Data.Entity.EntityState.Modified;
-            DataBase.SaveChanges();
+           await DataBase.SaveChangesAsync();
         }
 
-        public void Delete(string id)
+        public async Task Delete(string id)
         {
-            Sale sale = DataBase.Sales.Find(id);
+            Sale sale =await DataBase.Sales.FindAsync(id);
             DataBase.Entry(sale).State = System.Data.Entity.EntityState.Deleted;
-            DataBase.SaveChanges();
+            await DataBase.SaveChangesAsync();
         }
 
         public void DeleteAllByManagerId(string managerId)

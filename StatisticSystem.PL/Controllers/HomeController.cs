@@ -69,5 +69,6 @@ namespace StatisticSystem.PL.Controllers
             AuthenticationManager.SignOut();
             return RedirectToAction("Index", "Home");
         }      
+
     }
 }

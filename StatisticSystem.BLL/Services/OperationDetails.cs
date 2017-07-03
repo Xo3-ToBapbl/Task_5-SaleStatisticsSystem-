@@ -2,10 +2,7 @@
 {
     public class OperationDetails
     {
-        public OperationDetails()
-        { }
-
-        public OperationDetails(bool succedeed, string message, string prop)
+        public OperationDetails(bool succedeed, string message, string prop="")
         {
             Succedeed = succedeed;
             Message = message;
@@ -15,5 +12,22 @@
         public bool Succedeed { get; set; }
         public string Message { get; set; }
         public string Property { get; set; }
+
+        public string GetFullMessage()
+        {
+            if (Property!=null && Message!= null)
+            {
+                return Message + Property;
+            }
+            else
+            {
+                if (Message != null)
+                {
+                    return Message;
+                }
+                else
+                    return "";
+            }
+        }
     }
 }

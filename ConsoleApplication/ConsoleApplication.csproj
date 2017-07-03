@@ -57,6 +57,7 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -80,6 +81,10 @@
     <ProjectReference Include="..\StatisticSystem.DAL\StatisticSystem.DAL.csproj">
       <Project>{44429ca4-eb61-4aee-bb8f-602bb50b255a}</Project>
       <Name>StatisticSystem.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\StatisticSystem.PL\StatisticSystem.PL.csproj">
+      <Project>{076591B9-7643-415D-9E07-FE2965A3064B}</Project>
+      <Name>StatisticSystem.PL</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
